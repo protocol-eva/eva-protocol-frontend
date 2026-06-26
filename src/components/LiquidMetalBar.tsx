@@ -63,7 +63,13 @@ export default function LiquidMetalBar({
     }
     return () => {
       try {
+        const gl = (
+          mount as unknown as
+            | { gl?: WebGLRenderingContext | WebGL2RenderingContext }
+            | null
+        )?.gl
         mount?.dispose()
+        gl?.getExtension('WEBGL_lose_context')?.loseContext()
       } catch {
         /* context already gone */
       }

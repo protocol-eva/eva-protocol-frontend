@@ -21,7 +21,7 @@ const FILTERS: { id: NewsFilter; en: string; zh: string }[] = [
 ]
 
 async function fetchNews(filter: NewsFilter): Promise<NewsFeedResponse> {
-  const params = new URLSearchParams({ limit: '50' })
+  const params = new URLSearchParams({ limit: '30' })
   if (filter === 'breaking') {
     params.set('breaking', 'true')
   } else if (filter !== 'all') {
@@ -158,7 +158,12 @@ export function NewsPage() {
   const { data, error, isLoading, isValidating, mutate } = useSWR(
     ['news-feed', filter],
     () => fetchNews(filter),
-    { refreshInterval: 120_000, revalidateOnFocus: true }
+    {
+      refreshInterval: 120_000,
+      revalidateOnFocus: false,
+      dedupingInterval: 60_000,
+      keepPreviousData: true,
+    }
   )
 
   const articles = data?.articles ?? []

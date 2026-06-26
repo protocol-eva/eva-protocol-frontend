@@ -58,6 +58,16 @@ interface FearGreed {
   classification: string
 }
 
+type BinanceTickerResponse = Array<{
+  symbol: string
+  lastPrice: string
+  priceChangePercent: string
+}>
+
+type FearGreedResponse = {
+  data?: Array<{ value: string; value_classification: string }>
+} | null
+
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const TICKER_SYMBOLS = [
@@ -114,6 +124,68 @@ const TICKER_DISPLAY: Record<string, string> = {
   BONKUSDT: 'BONK',
   PEPEUSDT: 'PEPE',
 }
+const TICKER_TTL = 30_000
+const _tickerCache: { data?: BinanceTickerResponse; ts: number } = { ts: 0 }
+let _tickerInFlight: Promise<BinanceTickerResponse> | null = null
+
+function fetchTickerData(): Promise<BinanceTickerResponse> {
+  const now = Date.now()
+  if (_tickerCache.data && now - _tickerCache.ts < TICKER_TTL) {
+    return Promise.resolve(_tickerCache.data)
+  }
+  if (_tickerInFlight) return _tickerInFlight
+
+  const syms = JSON.stringify(TICKER_SYMBOLS)
+  _tickerInFlight = fetch(
+    `/binance/api/v3/ticker/24hr?symbols=${encodeURIComponent(syms)}`
+  )
+    .then((res) => res.json())
+    .then((data: BinanceTickerResponse) => {
+      if (Array.isArray(data)) _tickerCache.data = data
+      _tickerCache.ts = Date.now()
+      return Array.isArray(data) ? data : []
+    })
+    .catch(() => {
+      _tickerCache.data = []
+      _tickerCache.ts = Date.now()
+      return []
+    })
+    .finally(() => {
+      _tickerInFlight = null
+    })
+
+  return _tickerInFlight
+}
+
+const FNG_TTL = 60_000
+const _fngCache: { data?: FearGreedResponse; ts: number } = { ts: 0 }
+let _fngInFlight: Promise<FearGreedResponse> | null = null
+
+function fetchFearGreed(): Promise<FearGreedResponse> {
+  const now = Date.now()
+  if (now - _fngCache.ts < FNG_TTL) {
+    return Promise.resolve(_fngCache.data ?? null)
+  }
+  if (_fngInFlight) return _fngInFlight
+
+  _fngInFlight = fetch('/feargreed/fng?limit=1')
+    .then((r) => r.json())
+    .then((data: FearGreedResponse) => {
+      _fngCache.data = data
+      _fngCache.ts = Date.now()
+      return data
+    })
+    .catch(() => {
+      _fngCache.data = null
+      _fngCache.ts = Date.now()
+      return null
+    })
+    .finally(() => {
+      _fngInFlight = null
+    })
+
+  return _fngInFlight
+}
 function fmtTickerPrice(n: number) {
   if (n >= 1000)
     return `$${n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -124,17 +196,30 @@ function fmtTickerPrice(n: number) {
 // ─── CoinGecko cache (prevents rate-limit on rapid reloads) ──────────────────
 
 const _cgCache: Record<string, { data: unknown; ts: number }> = {}
+const _cgInFlight: Partial<Record<string, Promise<unknown>>> = {}
 const CG_TTL = 70_000 // 70 s — slightly longer than CoinGecko's 1-min cache window
 
 async function cgFetch(path: string): Promise<unknown> {
   const now = Date.now()
   const hit = _cgCache[path]
   if (hit && now - hit.ts < CG_TTL) return hit.data
-  const res = await fetch(`/coingecko${path}`)
-  const data = await res.json()
+  if (_cgInFlight[path]) return _cgInFlight[path]
 
-  if (!(data as any)?.status?.error_code) _cgCache[path] = { data, ts: now }
-  return data
+  _cgInFlight[path] = fetch(`/coingecko${path}`)
+    .then((res) => res.json())
+    .then((data) => {
+      _cgCache[path] = { data, ts: Date.now() }
+      return data
+    })
+    .catch(() => {
+      _cgCache[path] = { data: null, ts: Date.now() }
+      return null
+    })
+    .finally(() => {
+      delete _cgInFlight[path]
+    })
+
+  return _cgInFlight[path]
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -186,15 +271,7 @@ function TickerBar() {
     const fetchTicker = async () => {
       try {
         // Binance public API — no key, 1200 req/min, symbols already in Binance format
-        const syms = JSON.stringify(TICKER_SYMBOLS)
-        const res = await fetch(
-          `/binance/api/v3/ticker/24hr?symbols=${encodeURIComponent(syms)}`
-        )
-        const data: Array<{
-          symbol: string
-          lastPrice: string
-          priceChangePercent: string
-        }> = await res.json()
+        const data = await fetchTickerData()
         if (!Array.isArray(data)) return
         data.forEach((t) => {
           const price = parseFloat(t.lastPrice)
@@ -480,6 +557,7 @@ export function DataPage() {
   const isEn = language !== 'zh'
 
   const chartRef = useRef<HTMLDivElement>(null)
+  const mountedRef = useRef(false)
 
   const switchToSymbol = useCallback((_binanceSymbol: string) => {
     // Reserved for future chart symbol switching
@@ -512,17 +590,14 @@ export function DataPage() {
       // batch and blank the Market Cap / Volume / Dominance cards too.
       const [globalJson, fngJson] = (await Promise.all([
         cgFetch('/api/v3/global'),
-        fetch('/feargreed/fng?limit=1')
-          .then((r) => r.json())
-          .catch(() => null),
+        fetchFearGreed(),
       ])) as [
         { data?: Record<string, unknown> },
-        {
-          data?: Array<{ value: string; value_classification: string }>
-        } | null,
+        FearGreedResponse,
       ]
       const d = globalJson?.data
       if (d) {
+        if (!mountedRef.current) return
         const dd = d as any
         setGlobal({
           totalMarketCap: dd.total_market_cap?.usd ?? 0,
@@ -533,6 +608,7 @@ export function DataPage() {
       }
       const fng = fngJson?.data?.[0]
       if (fng) {
+        if (!mountedRef.current) return
         setFearGreed({
           value: fng.value,
           classification: fng.value_classification,
@@ -550,6 +626,7 @@ export function DataPage() {
         '/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false&price_change_percentage=7d,24h'
       )) as any[]
       if (!Array.isArray(json)) return
+      if (!mountedRef.current) return
       setCoins(
         json.slice(0, 20).map((c) => ({
           id: c.id,
@@ -582,11 +659,11 @@ export function DataPage() {
           binanceSymbol: `${c.symbol.toUpperCase()}USDT`,
         }))
       )
-      setCoinsLoading(false)
+      if (mountedRef.current) setCoinsLoading(false)
     } catch {
       /* fail silently */
     }
-    setCoinsLoading(false)
+    if (mountedRef.current) setCoinsLoading(false)
   }, [])
 
   // ── Fetch trending (CoinGecko trending search) ──
@@ -594,6 +671,7 @@ export function DataPage() {
     try {
       const json = (await cgFetch('/api/v3/search/trending')) as any
       if (!json?.coins) return
+      if (!mountedRef.current) return
 
       setTrending(
         (json.coins as any[]).slice(0, 7).map((c: any) => ({
@@ -618,6 +696,7 @@ export function DataPage() {
         '/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=7&interval=hourly'
       )) as any
       if (!json?.market_caps) return
+      if (!mountedRef.current) return
       const mcPts: number[] = (json.market_caps ?? []).map(
         (p: [number, number]) => p[1]
       )
@@ -633,14 +712,18 @@ export function DataPage() {
 
   // Stagger all initial fetches to avoid CoinGecko free-tier rate limits
   useEffect(() => {
+    mountedRef.current = true
     const delay = (ms: number) => new Promise((r) => setTimeout(r, ms))
     const loadAll = async () => {
       fetchGlobal()
       await delay(500)
+      if (!mountedRef.current) return
       fetchCoins()
       await delay(500)
+      if (!mountedRef.current) return
       fetchTrending()
       await delay(500)
+      if (!mountedRef.current) return
       fetchChart()
     }
     loadAll()
@@ -650,6 +733,7 @@ export function DataPage() {
     const trendingTimer = setInterval(fetchTrending, 120_000)
     const chartTimer = setInterval(fetchChart, 600_000)
     return () => {
+      mountedRef.current = false
       clearInterval(globalTimer)
       clearInterval(coinsTimer)
       clearInterval(trendingTimer)

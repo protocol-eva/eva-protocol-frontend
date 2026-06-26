@@ -1,9 +1,11 @@
 /**
  * SPA navigation — pathname-only routing (no legacy hash routes).
  *
- * Always use `goTo()` for in-app navigation so App.tsx, BrowserRouter, and
- * history stay in sync. Do not call pushState + setRoute separately.
+ * Always use `goTo()` for in-app navigation so App.tsx and browser history stay
+ * in sync. Do not call pushState + setRoute separately.
  */
+export const NAVIGATION_EVENT = 'eva:navigation'
+
 export type AppPage =
   | 'competition'
   | 'traders'
@@ -59,7 +61,8 @@ export function getPageFromPath(pathname: string): AppPage {
 
 export function goTo(path: string): void {
   if (typeof window === 'undefined') return
+  if (window.location.pathname + window.location.search === path) return
   window.history.pushState({}, '', path)
-  window.dispatchEvent(new PopStateEvent('popstate'))
+  window.dispatchEvent(new Event(NAVIGATION_EVENT))
   window.scrollTo({ top: 0 })
 }

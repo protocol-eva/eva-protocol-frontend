@@ -23,7 +23,6 @@ import {
 interface NavCommon {
   isEn: boolean
   currentPage?: NavPage
-  onLeaf: (leaf: NavLeaf) => void
 }
 
 // ── Desktop: a hover/click dropdown ──────────────────────────────────────────
@@ -31,7 +30,6 @@ function GroupMenu({
   group,
   isEn,
   currentPage,
-  onLeaf,
 }: NavCommon & { group: NavGroup }) {
   const [open, setOpen] = useState(false)
   const timer = useRef<number | undefined>(undefined)
@@ -83,15 +81,12 @@ function GroupMenu({
           role="menu"
         >
           {group.items.map((leaf) => (
-            <button
+            <a
               key={leaf.page}
-              type="button"
+              href={leaf.path}
               role="menuitem"
               className={`gl-nav-dd-item${leaf.page === currentPage ? ' is-active' : ''}`}
-              onClick={() => {
-                setOpen(false)
-                onLeaf(leaf)
-              }}
+              onClick={() => setOpen(false)}
             >
               <span className="gl-nav-dd-ico">
                 <HugeiconsIcon icon={leaf.icon} size={18} strokeWidth={1.8} />
@@ -104,7 +99,7 @@ function GroupMenu({
                   {isEn ? leaf.desc : leaf.descZh}
                 </span>
               </span>
-            </button>
+            </a>
           ))}
         </div>
       )}
@@ -116,14 +111,12 @@ function LinkItem({
   leaf,
   isEn,
   currentPage,
-  onLeaf,
 }: NavCommon & { leaf: NavLeaf }) {
   const active = leaf.page === currentPage
   return (
-    <button
-      type="button"
+    <a
+      href={leaf.path}
       className={`gl-nav-link${active ? ' header-nav-active' : ''}`}
-      onClick={() => onLeaf(leaf)}
     >
       <HugeiconsIcon
         icon={leaf.icon}
@@ -132,7 +125,7 @@ function LinkItem({
         className="gl-nav-ico"
       />
       <span>{isEn ? leaf.label : leaf.zh}</span>
-    </button>
+    </a>
   )
 }
 
@@ -155,14 +148,12 @@ function MobileRow({
   leaf,
   isEn,
   currentPage,
-  onLeaf,
 }: NavCommon & { leaf: NavLeaf }) {
   const active = leaf.page === currentPage
   return (
-    <button
-      type="button"
+    <a
+      href={leaf.path}
       className={`gl-mnav-row${active ? ' is-active' : ''}`}
-      onClick={() => onLeaf(leaf)}
     >
       <span className="gl-mnav-ico">
         <HugeiconsIcon icon={leaf.icon} size={20} strokeWidth={1.8} />
@@ -177,7 +168,7 @@ function MobileRow({
         strokeWidth={2}
         className="gl-mnav-arrow"
       />
-    </button>
+    </a>
   )
 }
 

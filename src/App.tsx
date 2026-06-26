@@ -1,12 +1,11 @@
 import {
   useEffect,
   useState,
+  useSyncExternalStore,
   lazy,
   Suspense,
-  startTransition,
   type ComponentType,
 } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import useSWR from 'swr'
 import { api } from './lib/api'
 // Always-on, lightweight components stay statically imported:
@@ -15,6 +14,8 @@ import { LoadingScreen } from './components/LoadingScreen'
 import HeaderBar from './components/HeaderBar'
 import { OnboardingDialog } from './components/OnboardingDialog'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { DataPage } from './pages/DataPage'
+import { NewsPage } from './pages/NewsPage'
 
 // ── Every page is lazy-loaded (code-split) so the initial bundle is small and
 //    each route only pulls its own chunk + shared vendor chunks. These are
@@ -24,8 +25,7 @@ import { ErrorBoundary } from './components/ErrorBoundary'
 // changes but the page stays frozen": after a redeploy the open tab still
 // references the OLD hashed chunk filename, which now 404s, so the lazy render
 // suspends FOREVER and the navbar locks up — reload ONCE to pull fresh assets
-// instead of hanging. (Combined with the top-level <Suspense> in main.tsx and
-// startTransition on navigation, this kills the prod-only nav freeze.)
+// instead of hanging. Top-level <Suspense> in main.tsx handles lazy chunks.
 function lazyWithReload(
   factory: () => Promise<{ default: ComponentType<any> }>
 ) {
@@ -101,12 +101,6 @@ const StrategyMarketPage = lazyWithReload(() =>
     default: m.StrategyMarketPage,
   }))
 )
-const DataPage = lazyWithReload(() =>
-  import('./pages/DataPage').then((m) => ({ default: m.DataPage }))
-)
-const NewsPage = lazyWithReload(() =>
-  import('./pages/NewsPage').then((m) => ({ default: m.NewsPage }))
-)
 const AuthGatePage = lazyWithReload(() =>
   import('./components/AuthGatePage').then((m) => ({ default: m.AuthGatePage }))
 )
@@ -121,8 +115,13 @@ import { ConfirmDialogProvider } from './components/ConfirmDialog'
 import { t } from './i18n/translations'
 import { useSystemConfig } from './hooks/useSystemConfig'
 import { APPKIT_THEME_VARIABLES } from './config/appkitTheme'
-import { goTo, getPageFromPath, PAGE_PATHS, type AppPage } from './lib/nav'
-
+import {
+  goTo,
+  getPageFromPath,
+  PAGE_PATHS,
+  NAVIGATION_EVENT,
+  type AppPage,
+} from './lib/nav'
 import { OFFICIAL_LINKS } from './constants/branding'
 import type {
   SystemStatus,
@@ -134,6 +133,19 @@ import type {
   Exchange,
 } from './types'
 
+/** Pathname from the browser — always current (no startTransition lag). */
+function subscribePathname(onStoreChange: () => void) {
+  window.addEventListener('popstate', onStoreChange)
+  window.addEventListener(NAVIGATION_EVENT, onStoreChange)
+  return () => {
+    window.removeEventListener('popstate', onStoreChange)
+    window.removeEventListener(NAVIGATION_EVENT, onStoreChange)
+  }
+}
+function getPathnameSnapshot() {
+  return window.location.pathname
+}
+
 type Page = AppPage
 
 function App() {
@@ -141,7 +153,7 @@ function App() {
   const { user, token, logout, isLoading } = useAuth()
   const { loading: configLoading } = useSystemConfig()
   const { setThemeMode, setThemeVariables } = useAppKitTheme()
-  const [route, setRoute] = useState(window.location.pathname)
+  const route = useSyncExternalStore(subscribePathname, getPathnameSnapshot)
 
   useEffect(() => {
     setThemeMode('dark')
@@ -207,26 +219,11 @@ function App() {
   const [lastUpdate, setLastUpdate] = useState<string>('--:--:--')
   const [decisionsLimit, setDecisionsLimit] = useState<number>(5)
 
-  // 监听URL变化，同步页面状态 — the ONE handler that keeps route + currentPage in
-  // sync on browser Back/Forward and on goTo()'s synthetic popstate.
+  // Keep trader slug in sync when the URL query changes (Back/Forward or SPA nav).
   useEffect(() => {
-    const handleRouteChange = () => {
-      const path = window.location.pathname
-      const traderParam = new URLSearchParams(window.location.search).get(
-        'trader'
-      )
-      if (traderParam) setSelectedTraderSlug(traderParam)
-      // `route` (pathname) is the single source of truth; `currentPage` derives
-      // from it, so they can never desync. startTransition so a Back/logo nav to
-      // a not-yet-loaded lazy page doesn't freeze the UI.
-      startTransition(() => setRoute(path))
-    }
-
-    window.addEventListener('popstate', handleRouteChange)
-    return () => {
-      window.removeEventListener('popstate', handleRouteChange)
-    }
-  }, [])
+    const traderParam = new URLSearchParams(window.location.search).get('trader')
+    if (traderParam) setSelectedTraderSlug(traderParam)
+  }, [route])
 
   // 切换页面时更新URL hash (当前通过按钮直接调用setCurrentPage，这个函数暂时保留用于未来扩展)
   // const navigateToPage = (page: Page) => {
@@ -395,6 +392,7 @@ function App() {
   if (route === '/data' && (!user || !token)) {
     return (
       <div
+        key="public-data"
         className="min-h-screen"
         style={{
           background: 'var(--surface-primary)',
@@ -411,8 +409,12 @@ function App() {
           onLoginRequired={handleLoginRequired}
           onPageChange={navigateToPage}
         />
-        <main className="pt-16">
-          <DataPage />
+        <main key="data" className="pt-16">
+          <ErrorBoundary name="public-data" resetKey={route}>
+            <Suspense fallback={<LoadingScreen fadingOut={false} />}>
+              <DataPage />
+            </Suspense>
+          </ErrorBoundary>
         </main>
         <LoginRequiredOverlay
           isOpen={loginOverlayOpen}
@@ -426,6 +428,7 @@ function App() {
   if (route === '/news' && (!user || !token)) {
     return (
       <div
+        key="public-news"
         className="min-h-screen"
         style={{
           background: 'var(--surface-primary)',
@@ -442,8 +445,12 @@ function App() {
           onLoginRequired={handleLoginRequired}
           onPageChange={navigateToPage}
         />
-        <main className="pt-16">
-          <NewsPage />
+        <main key="news" className="pt-16">
+          <ErrorBoundary name="public-news" resetKey={route}>
+            <Suspense fallback={<LoadingScreen fadingOut={false} />}>
+              <NewsPage />
+            </Suspense>
+          </ErrorBoundary>
         </main>
         <LoginRequiredOverlay
           isOpen={loginOverlayOpen}
@@ -487,76 +494,63 @@ function App() {
         onPageChange={navigateToPage}
       />
 
-      {/* Main Content with Page Transitions — wrapped in a page-level boundary
-          so a single broken page shows a fallback and the HEADER stays alive
-          (you can navigate away) instead of the whole SPA white-screening.
-          resetKey={currentPage} clears the error automatically on navigation. */}
+      {/* Main Content — wrapped in a page-level boundary so a single broken page
+          shows a fallback and the HEADER stays alive. Avoid page transition
+          overlap: old/new route trees should never coexist during navigation. */}
       <main className="min-h-screen pt-16">
         <ErrorBoundary name="page" resetKey={currentPage}>
-          <AnimatePresence initial={false}>
-            <motion.div
-              key={currentPage}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.12, ease: 'easeOut' }}
-            >
-              <Suspense fallback={<LoadingScreen fadingOut={false} />}>
-                {currentPage === 'competition' ? (
-                  <CompetitionPage />
-                ) : currentPage === 'data' ? (
-                  <DataPage />
-                ) : currentPage === 'news' ? (
-                  <NewsPage />
-                ) : currentPage === 'strategy-market' ? (
-                  <StrategyMarketPage />
-                ) : currentPage === 'traders' ? (
-                  <AITradersPage
-                    onTraderSelect={(traderId: string) => {
-                      setSelectedTraderId(traderId)
-                      goTo('/dashboard')
-                    }}
-                  />
-                ) : currentPage === 'backtest' ? (
-                  <BacktestPage />
-                ) : currentPage === 'strategy' ? (
-                  <StrategyStudioPage />
-                ) : currentPage === 'debate' ? (
-                  <DebateArenaPage />
-                ) : (
-                  <TraderDashboardPage
-                    selectedTrader={selectedTrader}
-                    status={status}
-                    account={account}
-                    positions={positions}
-                    decisions={decisions}
-                    decisionsLimit={decisionsLimit}
-                    onDecisionsLimitChange={setDecisionsLimit}
-                    stats={stats}
-                    lastUpdate={lastUpdate}
-                    language={language}
-                    traders={traders}
-                    tradersError={tradersError}
-                    selectedTraderId={selectedTraderId}
-                    onTraderSelect={(traderId: string) => {
-                      setSelectedTraderId(traderId)
-                      // 更新 URL 参数（使用 slug: name-id前4位）
-                      const trader = traders?.find(
-                        (t) => t.trader_id === traderId
-                      )
-                      if (trader) {
-                        const url = new URL(window.location.href)
-                        url.searchParams.set('trader', getTraderSlug(trader))
-                        window.history.replaceState({}, '', url.toString())
-                      }
-                    }}
-                    onNavigateToTraders={() => goTo('/traders')}
-                    exchanges={exchanges}
-                  />
-                )}
-              </Suspense>
-            </motion.div>
-          </AnimatePresence>
+          <Suspense fallback={<LoadingScreen fadingOut={false} />}>
+            {currentPage === 'competition' ? (
+              <CompetitionPage />
+            ) : currentPage === 'data' ? (
+              <DataPage />
+            ) : currentPage === 'news' ? (
+              <NewsPage />
+            ) : currentPage === 'strategy-market' ? (
+              <StrategyMarketPage />
+            ) : currentPage === 'traders' ? (
+              <AITradersPage
+                onTraderSelect={(traderId: string) => {
+                  setSelectedTraderId(traderId)
+                  goTo('/dashboard')
+                }}
+              />
+            ) : currentPage === 'backtest' ? (
+              <BacktestPage />
+            ) : currentPage === 'strategy' ? (
+              <StrategyStudioPage />
+            ) : currentPage === 'debate' ? (
+              <DebateArenaPage />
+            ) : (
+              <TraderDashboardPage
+                selectedTrader={selectedTrader}
+                status={status}
+                account={account}
+                positions={positions}
+                decisions={decisions}
+                decisionsLimit={decisionsLimit}
+                onDecisionsLimitChange={setDecisionsLimit}
+                stats={stats}
+                lastUpdate={lastUpdate}
+                language={language}
+                traders={traders}
+                tradersError={tradersError}
+                selectedTraderId={selectedTraderId}
+                onTraderSelect={(traderId: string) => {
+                  setSelectedTraderId(traderId)
+                  // 更新 URL 参数（使用 slug: name-id前4位）
+                  const trader = traders?.find((t) => t.trader_id === traderId)
+                  if (trader) {
+                    const url = new URL(window.location.href)
+                    url.searchParams.set('trader', getTraderSlug(trader))
+                    window.history.replaceState({}, '', url.toString())
+                  }
+                }}
+                onNavigateToTraders={() => goTo('/traders')}
+                exchanges={exchanges}
+              />
+            )}
+          </Suspense>
         </ErrorBoundary>
       </main>
 

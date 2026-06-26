@@ -164,12 +164,19 @@ export default function DarkVeil({
     const start = performance.now()
     let frame = 0
     let running = true
+    let lastRender = 0
+    const frameTime = 1000 / (isMobile ? 24 : 30)
 
-    const loop = () => {
+    const loop = (now = performance.now()) => {
       if (document.hidden) {
         running = false
         return
       }
+      if (now - lastRender < frameTime) {
+        frame = requestAnimationFrame(loop)
+        return
+      }
+      lastRender = now - ((now - lastRender) % frameTime)
       program.uniforms.uTime.value =
         ((performance.now() - start) / 1000) * speed
       program.uniforms.uHueShift.value = hueShift
@@ -201,13 +208,15 @@ export default function DarkVeil({
     }
 
     return () => {
-      // Do NOT loseContext() here. React StrictMode (dev) remounts this effect on
-      // the SAME canvas; losing the context leaves the second mount with a dead
-      // context that can't link the program (blank veil). The context is released
-      // when the canvas element is garbage-collected.
+      running = false
       cancelAnimationFrame(frame)
       window.removeEventListener('resize', resize)
       document.removeEventListener('visibilitychange', onVisibility)
+      geometry.remove()
+      program.remove()
+      gl.getExtension('WEBGL_lose_context')?.loseContext()
+      canvas.width = 0
+      canvas.height = 0
     }
   }, [
     hueShift,

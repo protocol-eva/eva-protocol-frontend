@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import { Toaster } from 'sonner'
 import './index.css'
-import { BrowserRouter } from 'react-router-dom'
 import { WagmiProvider } from 'wagmi'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient, wagmiAdapter } from './config/wallet'
@@ -18,37 +17,30 @@ import { LoadingScreen } from './components/LoadingScreen'
 // and never runs in production, so removing it costs nothing at runtime and
 // makes dev behave like prod. (See audit: main.tsx StrictMode × WebGL churn.)
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <BrowserRouter>
-    <ErrorBoundary name="root">
-      <Toaster
-        theme="dark"
-        richColors
-        closeButton
-        position="top-center"
-        duration={2200}
-        toastOptions={{
-          className: 'nofx-toast',
-          style: {
-            background: '#0b0e11',
-            border: '1px solid var(--panel-border)',
-            color: 'var(--text-primary)',
-          },
-        }}
-      />
-      <WagmiProvider config={wagmiAdapter.wagmiConfig}>
-        <QueryClientProvider client={queryClient}>
-          {/* Top-level Suspense — App's early returns render LAZY pages
-                (LandingPage, DataPage, AuthGate…) with NO local boundary. In
-                production those chunks load on demand, so navigating to one that
-                isn't loaded yet suspends; without this boundary React bails and
-                the page "doesn't change" (the prod-only back/home nav bug). */}
-          <Suspense fallback={<LoadingScreen fadingOut={false} />}>
-            <App />
-          </Suspense>
-        </QueryClientProvider>
-      </WagmiProvider>
-    </ErrorBoundary>
-  </BrowserRouter>
+  <ErrorBoundary name="root">
+    <Toaster
+      theme="dark"
+      richColors
+      closeButton
+      position="top-center"
+      duration={2200}
+      toastOptions={{
+        className: 'nofx-toast',
+        style: {
+          background: '#0b0e11',
+          border: '1px solid var(--panel-border)',
+          color: 'var(--text-primary)',
+        },
+      }}
+    />
+    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <Suspense fallback={<LoadingScreen fadingOut={false} />}>
+          <App />
+        </Suspense>
+      </QueryClientProvider>
+    </WagmiProvider>
+  </ErrorBoundary>
 )
 
 // --- First-paint splash (#app-loader in index.html) ---------------------------

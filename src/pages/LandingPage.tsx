@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
-import { useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import ReactMarkdown from 'react-markdown'
 import {
@@ -300,7 +299,6 @@ const COMMANDS = [
 // ── component ─────────────────────────────────────────────────────────────────
 
 export function LandingPage() {
-  useLocation() // keeps router context alive for child components
   const { user, logout } = useAuth()
   const { language, setLanguage } = useLanguage()
   const { theme } = useTheme()

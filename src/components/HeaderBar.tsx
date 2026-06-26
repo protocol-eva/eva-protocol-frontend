@@ -17,11 +17,10 @@ import { t, type Language } from '../i18n/translations'
 import { useSystemConfig } from '../hooks/useSystemConfig'
 import { OFFICIAL_LINKS } from '../constants/branding'
 import { useTheme } from '../contexts/ThemeContext'
-import { goTo } from '../lib/nav'
 import { useAccountUiStore } from '../stores/accountUiStore'
 import { DesktopNav, MobileNav } from './nav/NavMenu'
 import { SettingsModal } from './SettingsModal'
-import type { NavLeaf, NavPage } from './nav/navConfig'
+import type { NavPage } from './nav/navConfig'
 
 type Page =
   | 'competition'
@@ -58,8 +57,6 @@ export default function HeaderBar({
   onLanguageChange: _onLanguageChange,
   user,
   onLogout,
-  onPageChange,
-  onLoginRequired,
   onLoginClick: _onLoginClick,
 }: HeaderBarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -86,26 +83,11 @@ export default function HeaderBar({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  // Unified handler for any nav destination (dropdown row or top-level link),
-  // shared by desktop + mobile. Auth-gated leaves open the login overlay instead
-  // of navigating, so the UX matches everywhere.
-  const handleLeaf = useCallback(
-    (leaf: NavLeaf) => {
-      setMobileMenuOpen(false)
-      if (leaf.requiresAuth && !isLoggedIn) {
-        onLoginRequired?.(language !== 'zh' ? leaf.label : leaf.zh)
-        return
-      }
-      onPageChange?.(leaf.page as Page)
-    },
-    [isLoggedIn, onLoginRequired, onPageChange, language]
-  )
-
-  // EVA logo → home (SPA nav, so the current page unmounts cleanly — frees the
-  // landing's WebGL when arriving, and the 3D disposes when we leave home).
+  // EVA logo → home. Use a normal document navigation from the global header:
+  // several Chromium environments were freezing on the custom SPA route path.
   const goHome = useCallback(() => {
     setMobileMenuOpen(false)
-    goTo('/')
+    if (window.location.pathname !== '/') window.location.assign('/')
   }, [])
 
   // SPA-navigate an <a> on a plain left-click (no full bundle reload) while
@@ -123,7 +105,7 @@ export default function HeaderBar({
         return
       e.preventDefault()
       setMobileMenuOpen(false)
-      goTo(path)
+      window.location.assign(path)
     },
     []
   )
@@ -152,7 +134,6 @@ export default function HeaderBar({
             <DesktopNav
               isEn={isEn}
               currentPage={currentPage as NavPage | undefined}
-              onLeaf={handleLeaf}
             />
 
             {/* Right Side - Social Links and User Actions */}
@@ -404,7 +385,6 @@ export default function HeaderBar({
                 <MobileNav
                   isEn={isEn}
                   currentPage={currentPage as NavPage | undefined}
-                  onLeaf={handleLeaf}
                 />
               </div>
 
