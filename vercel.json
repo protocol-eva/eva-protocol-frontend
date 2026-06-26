@@ -1,0 +1,10 @@
+{
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "https://api.oko-agent.io/api/:path*" },
+    { "source": "/binance/:path*", "destination": "https://eva-proxy-production.up.railway.app/binance/:path*" },
+    { "source": "/coingecko/:path*", "destination": "https://eva-proxy-production.up.railway.app/coingecko/:path*" },
+    { "source": "/feargreed/:path*", "destination": "https://eva-proxy-production.up.railway.app/feargreed/:path*" },
+    { "source": "/gmgn/:path*", "destination": "https://gmgn.ai/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

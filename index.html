@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-CN" translate="no">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-TM429527');</script>
+<!-- End Google Tag Manager -->
+    <link rel="icon" type="image/svg+xml" href="/logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google" content="notranslate" />
+
+    <!-- Fonts: discovered immediately by the preload scanner (instead of a late
+         @import inside the CSS bundle) so they start downloading on the first
+         byte. The loading splash stays up until they are ready, so the
+         fallback->web-font swap happens behind it (no visible FOUT). -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;600;700;800;900&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;600;700;800;900&display=swap"
+    />
+
+    <title>EVA</title>
+
+    <!-- Critical splash styles. Inlined so the loader paints on the very first
+         frame (no white flash, no wait for the JS bundle or fonts). These
+         .eva-* rules match the React <LoadingScreen /> (defined in index.css). -->
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #000000;
+      }
+
+      /* While the splash is up, lock scroll so the app mounting behind it can't
+         toggle the scrollbar and shove the centred EVA loader sideways
+         (the "jumping" layout shift). Auto-restores when #app-loader is gone. */
+      html:has(#app-loader) {
+        overflow: hidden;
+      }
+
+      #app-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 100000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000000;
+        opacity: 1;
+        transition: opacity 0.6s ease;
+      }
+      #app-loader.is-hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .eva-loader__svg {
+        overflow: visible;
+        display: block;
+      }
+
+      /* Repeating dash → 6 light segments flow around every letter at once, so
+         there is no single visible start/end. The animation advances by exactly
+         one dash period (-300 over pathLength 1800) → perfectly seamless. NO
+         filters (those re-rasterise per frame and caused the lag). */
+      .eva-travel {
+        stroke-dasharray: 120 180;
+        animation: evaTravel 2.8s linear infinite;
+        will-change: stroke-dashoffset;
+      }
+      @keyframes evaTravel {
+        to {
+          stroke-dashoffset: -300px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .eva-travel {
+          animation: none;
+          stroke-dasharray: none;
+        }
+        #app-loader {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TM429527"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+    <!-- Instant CSS-only splash: animated chrome EVA. Removed by main.tsx once
+         the app is mounted and fonts are ready. -->
+    <div id="app-loader" role="status" aria-label="Loading">
+      <svg
+        class="eva-loader__svg"
+        width="150"
+        height="117"
+        viewBox="0 0 257 200"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient id="alChromeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#4a4a4a" />
+            <stop offset="15%" stop-color="#e8e8e8" />
+            <stop offset="30%" stop-color="#ffffff" />
+            <stop offset="50%" stop-color="#b0b0b0" />
+            <stop offset="70%" stop-color="#ffffff" />
+            <stop offset="85%" stop-color="#e8e8e8" />
+            <stop offset="100%" stop-color="#4a4a4a" />
+          </linearGradient>
+        </defs>
+
+        <path
+          d="M71.25 37.5H37.5V81.25H71.25V118.75H37.5V162.5H71.25V200H1.76951e-07V-2.98023e-06H71.25V37.5ZM136.48 -2.98023e-06H173.98L149.48 200H98.2305L73.7305 -2.98023e-06H111.23L123.98 160.25L136.48 -2.98023e-06ZM219.244 200L216.494 166H196.744L193.994 200H156.494L180.994 -2.98023e-06H232.244L256.744 200H219.244ZM199.744 128.5H213.494L206.744 39.75L199.744 128.5Z"
+          fill="none"
+          stroke="#0a0a0a"
+          stroke-width="12"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          class="eva-travel eva-travel--glow"
+          pathLength="1800"
+          d="M71.25 37.5H37.5V81.25H71.25V118.75H37.5V162.5H71.25V200H1.76951e-07V-2.98023e-06H71.25V37.5ZM136.48 -2.98023e-06H173.98L149.48 200H98.2305L73.7305 -2.98023e-06H111.23L123.98 160.25L136.48 -2.98023e-06ZM219.244 200L216.494 166H196.744L193.994 200H156.494L180.994 -2.98023e-06H232.244L256.744 200H219.244ZM199.744 128.5H213.494L206.744 39.75L199.744 128.5Z"
+          fill="none"
+          stroke="rgba(200, 220, 255, 0.22)"
+          stroke-width="20"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          class="eva-travel"
+          pathLength="1800"
+          d="M71.25 37.5H37.5V81.25H71.25V118.75H37.5V162.5H71.25V200H1.76951e-07V-2.98023e-06H71.25V37.5ZM136.48 -2.98023e-06H173.98L149.48 200H98.2305L73.7305 -2.98023e-06H111.23L123.98 160.25L136.48 -2.98023e-06ZM219.244 200L216.494 166H196.744L193.994 200H156.494L180.994 -2.98023e-06H232.244L256.744 200H219.244ZM199.744 128.5H213.494L206.744 39.75L199.744 128.5Z"
+          fill="none"
+          stroke="url(#alChromeGradient)"
+          stroke-width="9"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          class="eva-travel"
+          pathLength="1800"
+          d="M71.25 37.5H37.5V81.25H71.25V118.75H37.5V162.5H71.25V200H1.76951e-07V-2.98023e-06H71.25V37.5ZM136.48 -2.98023e-06H173.98L149.48 200H98.2305L73.7305 -2.98023e-06H111.23L123.98 160.25L136.48 -2.98023e-06ZM219.244 200L216.494 166H196.744L193.994 200H156.494L180.994 -2.98023e-06H232.244L256.744 200H219.244ZM199.744 128.5H213.494L206.744 39.75L199.744 128.5Z"
+          fill="none"
+          stroke="rgba(255, 255, 255, 0.95)"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </div>
+
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
