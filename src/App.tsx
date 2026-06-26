@@ -113,7 +113,6 @@ import { ThemeProvider } from './contexts/ThemeContext'
 import { useAppKitTheme } from '@reown/appkit/react'
 import { ConfirmDialogProvider } from './components/ConfirmDialog'
 import { t } from './i18n/translations'
-import { useSystemConfig } from './hooks/useSystemConfig'
 import { APPKIT_THEME_VARIABLES } from './config/appkitTheme'
 import {
   goTo,
@@ -151,7 +150,6 @@ type Page = AppPage
 function App() {
   const { language, setLanguage } = useLanguage()
   const { user, token, logout, isLoading } = useAuth()
-  const { loading: configLoading } = useSystemConfig()
   const { setThemeMode, setThemeVariables } = useAppKitTheme()
   const route = useSyncExternalStore(subscribePathname, getPathnameSnapshot)
 
@@ -343,9 +341,9 @@ function App() {
   // single handleRouteChange above — they had no cases for /tokenomics,
   // /upgrade, /docs which is exactly why navigation desynced.)
 
-  // Show the loading screen while checking auth or config — same look as the
-  // landing loader, so there's no orange flash before the page mounts.
-  if (isLoading || configLoading) {
+  // Show the loading screen only while checking local auth. Public pages must
+  // never depend on backend config availability (especially on static hosts).
+  if (isLoading) {
     return <LoadingScreen fadingOut={false} />
   }
 

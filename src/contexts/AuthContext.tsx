@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { getSystemConfig, apiUrl } from '../lib/config'
+import { apiUrl } from '../lib/config'
 import { reset401Flag, httpClient } from '../lib/httpClient'
 import {
   getAuthIntent,
@@ -119,29 +119,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
-    // 先检查是否为管理员模式（使用带缓存的系统配置获取）
-    getSystemConfig()
-      .then(() => {
-        // 不再在管理员模式下模拟登录；统一检查本地存储
-        const savedToken = localStorage.getItem('auth_token')
-        const savedUser = localStorage.getItem('auth_user')
-        if (savedToken && savedUser) {
-          setToken(savedToken)
-          setUser(JSON.parse(savedUser))
-        }
-
-        setIsLoading(false)
-      })
-      .catch((err) => {
-        console.error('Failed to fetch system config:', err)
-        const savedToken = localStorage.getItem('auth_token')
-        const savedUser = localStorage.getItem('auth_user')
-        if (savedToken && savedUser) {
-          setToken(savedToken)
-          setUser(JSON.parse(savedUser))
-        }
-        setIsLoading(false)
-      })
+    const savedToken = localStorage.getItem('auth_token')
+    const savedUser = localStorage.getItem('auth_user')
+    if (savedToken && savedUser) {
+      setToken(savedToken)
+      setUser(JSON.parse(savedUser))
+    }
+    setIsLoading(false)
   }, [])
 
   // Listen for unauthorized events from httpClient (401 responses)

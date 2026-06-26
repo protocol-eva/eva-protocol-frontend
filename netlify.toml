@@ -1,0 +1,38 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://api.oko-agent.io/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/binance/*"
+  to = "https://eva-proxy-production.up.railway.app/binance/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/coingecko/*"
+  to = "https://eva-proxy-production.up.railway.app/coingecko/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/feargreed/*"
+  to = "https://eva-proxy-production.up.railway.app/feargreed/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/gmgn/*"
+  to = "https://gmgn.ai/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
