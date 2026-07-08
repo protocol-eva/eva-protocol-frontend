@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN" translate="no">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-TM429527');</script>
+<!-- End Google Tag Manager -->
+    <link rel="icon" type="image/svg+xml" href="/logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google" content="notranslate" />
+
+    <!-- Fonts: discovered immediately by the preload scanner (instead of a late
+         @import inside the CSS bundle) so they start downloading on the first
+         byte. The loading splash stays up until they are ready, so the
+         fallback->web-font swap happens behind it (no visible FOUT). -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;600;700;800;900&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;600;700;800;900&display=swap"
+    />
+
+    <title>EVA</title>
+
+    <!-- Critical splash styles. Inlined so the loader paints on the very first
+         frame (no white flash, no wait for the JS bundle or fonts). These
+         .eva-* rules match the React <LoadingScreen /> (defined in index.css). -->
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #000000;
+      }
+
+      /* While the splash is up, lock scroll so the app mounting behind it can't
+         toggle the scrollbar and shove the centred EVA loader sideways
+         (the "jumping" layout shift). Auto-restores when #app-loader is gone. */
+      html:has(#app-loader) {
+        overflow: hidden;
+      }
+
+      #app-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 100000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000000;
+        opacity: 1;
+        transition: opacity 0.6s ease;
+      }
+      #app-loader.is-hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .eva-loader__dots {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .eva-loader__dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #ffffff;
+        animation: evaDotBounce 1.2s ease-in-out infinite;
+      }
+      .eva-loader__dot:nth-child(2) { animation-delay: 0.2s; }
+      .eva-loader__dot:nth-child(3) { animation-delay: 0.4s; }
+      @keyframes evaDotBounce {
+        0%, 80%, 100% { transform: translateY(0); opacity: 0.3; }
+        40% { transform: translateY(-12px); opacity: 1; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .eva-loader__dot {
+          animation: none;
+          opacity: 1;
+        }
+        #app-loader {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TM429527"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+    <!-- Instant CSS-only splash: bouncing dots. Removed by main.tsx once
+         the app is mounted and fonts are ready. -->
+    <div id="app-loader" role="status" aria-label="Loading">
+      <div class="eva-loader__dots">
+        <span class="eva-loader__dot"></span>
+        <span class="eva-loader__dot"></span>
+        <span class="eva-loader__dot"></span>
+      </div>
+    </div>
+
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

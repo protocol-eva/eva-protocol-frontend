@@ -1,0 +1,13 @@
+/* StrategyStudioPage page-scoped styles.
+   ONLY a compact size variant for the liquid-metal Save CTA so it fits the
+   studio toolbar next to the small Activate button. Everything else uses the
+   shared DashKit + .gl-* / .dash-* kit. */
+
+.lm-bar-compact {
+  border-radius: 12px;
+}
+.lm-bar-compact .lm-bar-inner {
+  padding: 7px 16px;
+  font-size: 12.5px;
+  border-radius: 9.5px;
+}
