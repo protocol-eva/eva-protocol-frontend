@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { apiUrl } from '../lib/config'
 
 const _cache = new Map<string, { data: unknown; ts: number }>()
 async function cachedFetch(
@@ -230,7 +231,7 @@ export function DataPage() {
       const request = (async () => {
         try {
           return await cachedFetch(['futures', sym], async () => {
-            const res = await fetch(`/api/market/futures?symbol=${encodeURIComponent(sym)}`)
+            const res = await fetch(apiUrl(`/api/market/futures?symbol=${encodeURIComponent(sym)}`))
             if (!res.ok) throw new Error('HTTP ' + res.status)
             return await res.json()
           }, FUT_TTL)
@@ -244,6 +245,15 @@ export function DataPage() {
 
       futInflight.set(sym, request)
       return request
+    }
+
+    function showFutLoadError() {
+      const msg =
+        '<div class="flex items-center justify-center h-full text-[#878c8f] text-xs text-center px-4 leading-relaxed">Unable to load futures data.<br/>Deploy the latest backend or set <code class="text-[10px]">VITE_API_BASE_URL</code>.</div>'
+      const levelsWrap = el('liqmap-levels')
+      if (levelsWrap) levelsWrap.innerHTML = msg
+      const aiBody = el('ai-body')
+      if (aiBody) aiBody.innerHTML = msg
     }
 
     function renderFutPanels(data: unknown) {
@@ -268,7 +278,9 @@ export function DataPage() {
       if (cached) renderFutPanels(cached.data)
 
       void fetchFutData(sym).then((data) => {
-        if (data && futSym === sym) renderFutPanels(data)
+        if (futSym !== sym) return
+        if (data) renderFutPanels(data)
+        else if (!_cache.get(['futures', sym].join(':'))) showFutLoadError()
       })
     }
 
@@ -399,6 +411,7 @@ export function DataPage() {
       const data = await fetchFutData(futSym, force)
       if (data) renderFutPanels(data)
       else if (futData) renderFutPanels(futData)
+      else showFutLoadError()
     }
 
     function initFut() {
