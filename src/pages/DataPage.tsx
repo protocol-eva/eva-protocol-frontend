@@ -333,9 +333,9 @@ export function DataPage() {
       const reversed=[...levels].reverse()
       const markIdx=liqMarkerInsertIdx(mark, reversed)
       const sourceLabel = d.liqMap?.source === 'estimated'
-        ? 'Est. liq clusters from OI + leverage'
+        ? 'Est. liq at price — rough model, not live data'
         : d.liqMap?.source === 'binance_ws'
-          ? 'Live Binance liquidations'
+          ? 'Recent Binance liquidation volume'
           : ''
       let html = sourceLabel
         ? `<div class="liq-source-label text-[9px] text-[#878c8f] uppercase tracking-[0.04em] mb-1 shrink-0">${sourceLabel}</div>`
@@ -347,8 +347,8 @@ export function DataPage() {
         const pct=Math.max(4, total/maxUsd*100)
         const isLong=(l.longLiqUsd||0)>=(l.shortLiqUsd||0)
         const color=isLong?'#1fa67d':'#ed7088'
-        const oiEst=(total/1e6).toFixed(1)
-        html+=`<div class="flex items-center gap-1.5 h-4 shrink-0"><span class="text-[9px] text-[#878c8f] min-w-[64px] text-right shrink-0 [font-variant-numeric:tabular-nums]">${fmtPx(l.price)}</span><div class="flex-1 h-[7px] bg-[rgba(255,255,255,0.04)] rounded-[2px] overflow-hidden"><div class="h-full rounded-[2px] liq-bar-fill" style="width:${pct.toFixed(0)}%;background:${color}"></div></div><span class="text-[9px] text-[#878c8f] min-w-[44px] text-right shrink-0 [font-variant-numeric:tabular-nums]">$${oiEst}M</span></div>`
+        const liqLbl=fmtHL(total)
+        html+=`<div class="flex items-center gap-1.5 h-4 shrink-0" title="Est. USD notional liquidated if price hits this level"><span class="text-[9px] text-[#878c8f] min-w-[64px] text-right shrink-0 [font-variant-numeric:tabular-nums]">${fmtPx(l.price)}</span><div class="flex-1 h-[7px] bg-[rgba(255,255,255,0.04)] rounded-[2px] overflow-hidden"><div class="h-full rounded-[2px] liq-bar-fill" style="width:${pct.toFixed(0)}%;background:${color}"></div></div><span class="text-[9px] text-[#878c8f] min-w-[52px] text-right shrink-0 [font-variant-numeric:tabular-nums]">${liqLbl}</span></div>`
       })
       if(markIdx>=reversed.length)html+=liqMarkerRowHtml(mark, markIdx)
       html += '</div>'
