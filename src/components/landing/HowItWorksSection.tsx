@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Download, Rocket, TrendingUp, AlertTriangle } from 'lucide-react'
 import { t, Language } from '../../i18n/translations'
+import { OFFICIAL_LINKS } from '../../constants/branding'
 
 interface HowItWorksSectionProps {
   language: Language
@@ -18,7 +19,7 @@ export default function HowItWorksSection({
         language === 'zh'
           ? '在你的服务器上运行一条命令即可完成部署'
           : 'Run a single command on your server to deploy',
-      code: 'curl -fsSL https://raw.githubusercontent.com/EVAAiOS/eva/main/install.sh | bash',
+      code: `git clone ${OFFICIAL_LINKS.githubFrontend}.git && cd eva-protocol-frontend && npm install`,
     },
     {
       icon: Rocket,

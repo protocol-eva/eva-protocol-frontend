@@ -6,6 +6,7 @@ import { FAQSidebar } from './FAQSidebar'
 import { FAQContent } from './FAQContent'
 import { faqCategories } from '../../data/faqData'
 import type { FAQCategory } from '../../data/faqData'
+import { OFFICIAL_LINKS } from '../../constants/branding'
 
 interface FAQLayoutProps {
   language: Language
@@ -144,9 +145,9 @@ export function FAQLayout({ language }: FAQLayoutProps) {
           <p className="mb-6" style={{ color: 'var(--text-secondary)' }}>
             {t('faqContactUs', language)}
           </p>
-          <div className="flex items-center justify-center gap-4">
+          <div className="flex items-center justify-center gap-4 flex-wrap">
             <a
-              href="https://github.com/EVAAiOS/eva"
+              href={OFFICIAL_LINKS.github}
               target="_blank"
               rel="noopener noreferrer"
               className="px-6 py-3 rounded-lg font-semibold transition-all hover:scale-105"
@@ -159,7 +160,20 @@ export function FAQLayout({ language }: FAQLayoutProps) {
               GitHub
             </a>
             <a
-              href="https://t.me/eva_dev_community"
+              href={OFFICIAL_LINKS.twitter}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3 rounded-lg font-semibold transition-all hover:scale-105"
+              style={{
+                background: 'var(--surface-secondary)',
+                color: 'var(--text-primary)',
+                border: '1px solid var(--surface-tertiary)',
+              }}
+            >
+              X
+            </a>
+            <a
+              href={OFFICIAL_LINKS.telegram}
               target="_blank"
               rel="noopener noreferrer"
               className="px-6 py-3 rounded-lg font-semibold transition-all hover:scale-105"

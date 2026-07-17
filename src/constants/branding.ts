@@ -2,8 +2,11 @@
 
 export const OFFICIAL_LINKS = {
   github: 'https://github.com/protocol-eva',
-  twitter: 'https://x.com/EvaProtocolBase',
-  telegram: 'https://t.me/evaprotocolbase',
+  githubFrontend: 'https://github.com/protocol-eva/eva-protocol-frontend',
+  githubBackend: 'https://github.com/protocol-eva/eva-backend',
+  twitter: 'https://x.com/EvaProtocolRH',
+  telegram: 'https://t.me/evaprotocolRH',
+  twitterHandle: '@EvaProtocolRH',
 } as const
 
 // Brand info

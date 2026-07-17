@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Copy, Check } from 'lucide-react'
+import { OFFICIAL_LINKS } from '../../../constants/branding'
 
 export default function DeploymentHub() {
   const [copied, setCopied] = useState(false)
-  const installCmd =
-    'curl -fsSL https://raw.githubusercontent.com/EVAAiOS/eva/main/install.sh | bash'
+  const installCmd = `git clone ${OFFICIAL_LINKS.githubFrontend}.git`
 
   const handleCopy = () => {
     navigator.clipboard.writeText(installCmd)
@@ -80,9 +80,9 @@ export default function DeploymentHub() {
             className="text-xs mt-4 px-4"
             style={{ color: 'var(--text-tertiary)' }}
           >
-            Requires Docker. See{' '}
+            Requires Node.js 18+. See{' '}
             <a
-              href="https://github.com/EVAAiOS/eva/blob/main/README.md"
+              href={`${OFFICIAL_LINKS.githubFrontend}/blob/main/README.md`}
               target="_blank"
               rel="noopener noreferrer"
               className="underline hover:no-underline"

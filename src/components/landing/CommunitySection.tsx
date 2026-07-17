@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { MessageCircle, Heart, Repeat2, ExternalLink } from 'lucide-react'
 import { Language } from '../../i18n/translations'
+import { OFFICIAL_LINKS } from '../../constants/branding'
 
 interface TweetProps {
   quote: string
@@ -172,7 +173,7 @@ export default function CommunitySection({ language }: CommunitySectionProps) {
           viewport={{ once: true }}
         >
           <a
-            href="https://twitter.com/eva_official"
+            href={OFFICIAL_LINKS.twitter}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all hover:scale-105"

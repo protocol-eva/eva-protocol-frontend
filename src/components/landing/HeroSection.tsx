@@ -10,7 +10,10 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ language }: HeroSectionProps) {
-  const { stars, daysOld, isLoading } = useGitHubStats('EVAAiOS', 'eva')
+  const { stars, daysOld, isLoading } = useGitHubStats(
+    'protocol-eva',
+    'eva-protocol-frontend'
+  )
   const animatedStars = useCounterAnimation({
     start: 0,
     end: stars,

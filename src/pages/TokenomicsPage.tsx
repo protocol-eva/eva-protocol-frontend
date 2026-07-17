@@ -18,6 +18,7 @@ import {
   EVA_BASE_TOKEN_ADDRESS,
   isEvaTokenConfigured,
 } from '../lib/upgradeConfig'
+import { OFFICIAL_LINKS } from '../constants/branding'
 
 // ── Tokenomics data ────────────────────────────────────────────────────────────
 
@@ -772,7 +773,7 @@ export function TokenomicsPage() {
             </div>
             <div className="flex flex-wrap items-center justify-center gap-3 flex-shrink-0">
               <a
-                href="https://x.com/EvaProtocolBase"
+                href={OFFICIAL_LINKS.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all hover:brightness-110 whitespace-nowrap"
@@ -786,7 +787,7 @@ export function TokenomicsPage() {
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
               <a
-                href="https://github.com/eva-protocol"
+                href={OFFICIAL_LINKS.github}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all hover:brightness-110 whitespace-nowrap"
