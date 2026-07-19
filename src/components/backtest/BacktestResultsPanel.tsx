@@ -489,10 +489,7 @@ export const BacktestResultsPanel = memo(function BacktestResultsPanel({
 
                   {metrics && !('error' in metrics) && (
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
-                      <div
-                        className="p-3 rounded-lg"
-                        style={{ background: 'var(--surface-secondary)' }}
-                      >
+                      <div className="p-3 rounded-lg">
                         <div
                           className="flex items-center gap-1 text-xs"
                           style={{ color: 'var(--text-secondary)' }}
@@ -511,10 +508,7 @@ export const BacktestResultsPanel = memo(function BacktestResultsPanel({
                           {(metrics.win_rate ?? 0).toFixed(1)}%
                         </div>
                       </div>
-                      <div
-                        className="p-3 rounded-lg"
-                        style={{ background: 'var(--surface-secondary)' }}
-                      >
+                      <div className="p-3 rounded-lg">
                         <div
                           className="flex items-center gap-1 text-xs"
                           style={{ color: 'var(--text-secondary)' }}
@@ -533,10 +527,7 @@ export const BacktestResultsPanel = memo(function BacktestResultsPanel({
                           {(metrics.profit_factor ?? 0).toFixed(2)}
                         </div>
                       </div>
-                      <div
-                        className="p-3 rounded-lg"
-                        style={{ background: 'var(--surface-secondary)' }}
-                      >
+                      <div className="p-3 rounded-lg">
                         <div
                           className="text-xs"
                           style={{ color: 'var(--text-secondary)' }}
@@ -550,10 +541,7 @@ export const BacktestResultsPanel = memo(function BacktestResultsPanel({
                           {metrics.trades ?? 0}
                         </div>
                       </div>
-                      <div
-                        className="p-3 rounded-lg"
-                        style={{ background: 'var(--surface-secondary)' }}
-                      >
+                      <div className="p-3 rounded-lg">
                         <div
                           className="text-xs"
                           style={{ color: 'var(--text-secondary)' }}
