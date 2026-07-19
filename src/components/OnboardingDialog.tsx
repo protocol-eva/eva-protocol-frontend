@@ -92,7 +92,7 @@ export function OnboardingDialog({ language }: OnboardingDialogProps) {
             <span className="dash-ico shrink-0">
               <Sparkles
                 className="w-[18px] h-[18px]"
-                style={{ color: '#bcd0ff' }}
+                style={{ color: '#86efac' }}
               />
             </span>
             <div className="min-w-0">

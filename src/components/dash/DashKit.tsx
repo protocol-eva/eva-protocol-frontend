@@ -16,7 +16,7 @@ import {
  * Design rules baked in:
  *  - Hugeicons only (no emojis, no lucide).
  *  - Metallic titles via `gl-metal-shine` / `gl-metal-text`.
- *  - Blue icon chips via `dash-ico` / `dash-kpi-ico`.
+ *  - Green icon chips via `dash-ico` / `dash-kpi-ico`.
  *  - Premium panels via the `gl-*-panel` families (applied by the page, not here).
  */
 
@@ -186,7 +186,7 @@ export function StatCard({
 }
 
 // ──────────────────────────────────────────────────────────────────────────
-// SectionHead — metallic shine title + blue icon chip + optional right slot.
+// SectionHead — metallic shine title + green icon chip + optional right slot.
 // Stagger the shine across a page with delay='-1.2s', '-2.4s', '-3.6s', …
 // ──────────────────────────────────────────────────────────────────────────
 export function SectionHead({

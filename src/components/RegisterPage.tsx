@@ -265,7 +265,7 @@ export function RegisterPage() {
               strokeWidth={2}
               className="animate-pulse"
               style={{
-                color: '#6f96ff',
+                color: '#86efac',
                 filter: 'drop-shadow(0 0 6px rgba(61,107,255,0.85))',
               }}
             />
