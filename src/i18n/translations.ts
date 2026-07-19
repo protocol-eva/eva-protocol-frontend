@@ -1311,7 +1311,7 @@ export const translations = {
       allocations: {
         publicSale: {
           label: 'Public Sale',
-          desc: 'Base launch — fair and transparent distribution',
+          desc: 'Robinhood launch — fair and transparent distribution',
         },
         treasury: {
           label: 'Treasury',
@@ -1387,8 +1387,8 @@ export const translations = {
       progress: 'Progress to unlock',
       remaining: '{amount} EVA remaining to unlock.',
       connectWallet: 'Connect wallet',
-      contractConfigured: 'Configured Base contract: {address}',
-      contractPending: 'Base contract not configured yet.',
+      contractConfigured: 'Configured Robinhood contract: {address}',
+      contractPending: 'Robinhood contract not configured yet.',
       gate: {
         eligible: 'Upgrade unlocked',
         unconfigured: 'Token gate pending contract launch',
@@ -1399,9 +1399,9 @@ export const translations = {
       },
       gateSub: {
         unconfigured:
-          'The holder gate is ready, but the EVA Base contract has not been configured yet. Once the token is live, this page will verify balances on Base.',
+          'The holder gate is ready, but the EVA Robinhood contract has not been configured yet. Once the token is live, this page will verify balances on Robinhood.',
         error:
-          'The app could not read your Base EVA balance. Make sure the connected wallet is on Base and holds EVA, then try again.',
+          'The app could not read your Robinhood EVA balance. Make sure the connected wallet is on Robinhood and holds EVA, then try again.',
         eligible:
           'Your connected wallet qualifies for the Upgrade feature set.',
         default:
@@ -1478,8 +1478,8 @@ export const translations = {
       commandsAria: 'Commands',
       walletConnected: 'Wallet connected',
       connectWallet: 'Connect wallet',
-      connectedOnBase: 'Connected on Base: {address}',
-      connectWalletOnBase: 'Connect wallet on Base',
+      connectedOnBase: 'Connected on Robinhood: {address}',
+      connectWalletOnBase: 'Connect wallet on Robinhood',
       newChat: 'new chat',
       holdings: 'Holdings',
       refresh: 'Refresh',
@@ -2781,7 +2781,7 @@ export const translations = {
       allocations: {
         publicSale: {
           label: '公开发售',
-          desc: 'Base 发射 — 公平透明的分配',
+          desc: 'Robinhood 发射 — 公平透明的分配',
         },
         treasury: {
           label: '金库',
@@ -2856,8 +2856,8 @@ export const translations = {
       progress: '距离解锁进度',
       remaining: '还需 {amount} EVA 才能解锁。',
       connectWallet: '连接钱包',
-      contractConfigured: '已配置 Base 合约：{address}',
-      contractPending: 'Base 合约暂未配置。',
+      contractConfigured: '已配置 Robinhood 合约：{address}',
+      contractPending: 'Robinhood 合约暂未配置。',
       gate: {
         eligible: '升级已解锁',
         unconfigured: '代币门槛等待合约上线',
@@ -2868,9 +2868,9 @@ export const translations = {
       },
       gateSub: {
         unconfigured:
-          '持币门槛逻辑已准备好，但 EVA 的 Base 合约尚未配置。代币上线后，本页将直接在 Base 上校验余额。',
+          '持币门槛逻辑已准备好，但 EVA 的 Robinhood 合约尚未配置。代币上线后，本页将直接在 Robinhood 上校验余额。',
         error:
-          '应用无法读取您的 Base EVA 余额。请确认当前连接的是持有 EVA 的 Base 钱包，然后重试。',
+          '应用无法读取您的 Robinhood EVA 余额。请确认当前连接的是持有 EVA 的 Robinhood 钱包，然后重试。',
         eligible: '您当前连接的钱包符合 Upgrade 功能资格。',
         default:
           '持有 150,000 EVA 的用户将获得高级桥接、助手与白名单能力。',
@@ -2936,15 +2936,15 @@ export const translations = {
     },
 
     landingPage: {
-      tagline: '基于 Base · 多链 · 实时 · 开源',
+      tagline: '基于 Robinhood · 多链 · 实时 · 开源',
       commandsTitle: '命令',
       contacts: '联系人',
       send: '发送',
       commandsAria: '命令',
       walletConnected: '钱包已连接',
       connectWallet: '连接钱包',
-      connectedOnBase: '已连接 Base：{address}',
-      connectWalletOnBase: '在 Base 上连接钱包',
+      connectedOnBase: '已连接 Robinhood：{address}',
+      connectWalletOnBase: '在 Robinhood 上连接钱包',
       newChat: '新对话',
       holdings: '持仓',
       refresh: '刷新',
