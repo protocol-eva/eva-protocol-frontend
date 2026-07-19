@@ -3409,23 +3409,35 @@ html { -webkit-tap-highlight-color: transparent; }
 .dash-select {
   appearance: none;
   -webkit-appearance: none;
-  background-color: #12141b;
-  background-image:
-    linear-gradient(180deg, #1a1e28 0%, #12141b 100%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238B9CB6' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  accent-color: #141414;
+  background-color: #141414;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238B9CB6' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: center, right 10px center;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-top-color: rgba(255, 255, 255, 0.14);
+  background-position: right 10px center;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 9px;
   color: var(--text-primary);
   font-size: 12.5px;
   font-weight: 600;
   padding: 7px 32px 7px 12px;
   cursor: pointer;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
-.dash-select:hover { border-color: rgba(0, 200, 83, 0.32); }
+.dash-select:hover {
+  background-color: #1a1a1a;
+  border-color: rgba(255, 255, 255, 0.14);
+}
+.dash-select:focus,
+.dash-select:focus-visible {
+  outline: none;
+  background-color: #1a1a1a;
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: none;
+}
+.dash-select option {
+  background: #141414;
+  color: var(--text-primary);
+}
 .dash-close-btn {
   display: inline-flex;
   align-items: center;
