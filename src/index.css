@@ -186,6 +186,8 @@ html {
   --panel-bg-hover: #181818;
   --panel-border: rgba(255, 255, 255, 0.07);
   --panel-border-hover: rgba(255, 255, 255, 0.14);
+  --card-bg: #131313;
+  --card-border: rgba(255, 255, 255, 0.07);
 
   --foreground: #F0F8FF;
   --text-primary: #F0F8FF;
@@ -1761,16 +1763,18 @@ appkit-modal {
   /* surfaces — matte-metal black */
   --background: #050505;
   --surface-primary: #050505;
-  --surface-secondary: rgba(20, 21, 26, 0.72);
-  --surface-tertiary: rgba(30, 31, 38, 0.72);
+  --surface-secondary: rgba(19, 19, 19, 0.95);
+  --surface-tertiary: rgba(24, 24, 24, 0.95);
   --surface-overlay: rgba(5, 5, 6, 0.96);
   --footer-bg: #050505;
   --footer-border: rgba(255, 255, 255, 0.06);
 
-  --panel-bg: rgba(13, 13, 16, 0.85);
-  --panel-bg-hover: rgba(20, 20, 25, 0.95);
-  --panel-border: rgba(255, 255, 255, 0.08);
-  --panel-border-hover: rgba(255, 255, 255, 0.18);
+  --panel-bg: #131313;
+  --panel-bg-hover: #181818;
+  --panel-border: rgba(255, 255, 255, 0.07);
+  --panel-border-hover: rgba(255, 255, 255, 0.14);
+  --card-bg: #131313;
+  --card-border: rgba(255, 255, 255, 0.07);
 
   --glass-bg: rgba(10, 10, 12, 0.60);
   --glass-border: rgba(255, 255, 255, 0.07);
@@ -2519,7 +2523,7 @@ html:has(.eva-loader) {
   height: 38px;
   padding: 0 10px;
   border-radius: 10px;
-  background: linear-gradient(180deg, #1a1e28 0%, #12141b 100%);
+  background: var(--card-bg);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-top-color: rgba(255, 255, 255, 0.14);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 1px 2px rgba(0, 0, 0, 0.4);
@@ -2874,64 +2878,17 @@ html:has(.eva-loader) {
   isolation: isolate;
   overflow: hidden;
   border-radius: 16px;
-  /* deep liquid-metal interior — soft baked top reflection + cool brushed body */
-  background:
-    radial-gradient(140% 90% at 50% -25%, rgba(34, 197, 94, 0.07) 0%, rgba(34, 197, 94, 0.02) 34%, transparent 60%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0) 14%),
-    linear-gradient(155deg, #121612 0%, #0a0a0a 30%, #0a0f0c 60%, #101612 100%);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    inset 0 0 44px rgba(0, 0, 0, 0.40),
-    0 2px 4px rgba(0, 0, 0, 0.3),
-    0 16px 36px rgba(0, 0, 0, 0.42);
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 2px 8px rgba(0, 0, 0, 0.35);
 }
 .gl-metal-panel > * { position: relative; z-index: 1; }
 
-/* ONE huge ultra-soft diffused glow that drifts very slowly (a serious bloom,
-   not a shiny stripe) — wide, faint, with a fuzzy halo around it. */
-.gl-metal-panel::after {
-  content: '';
-  position: absolute;
-  inset: -20%;
-  z-index: 0;
-  pointer-events: none;
-  background: radial-gradient(42% 60% at 50% 50%,
-    rgba(0, 200, 83, 0.085) 0%,
-    rgba(34, 197, 94, 0.045) 38%,
-    rgba(140, 165, 215, 0.018) 60%,
-    transparent 78%);
-  filter: blur(26px);
-  animation: gl-metal-glow 18s ease-in-out infinite alternate;
-}
-@keyframes gl-metal-glow {
-  0%   { transform: translate(-22%, -10%) scale(1.0); opacity: 0.65; }
-  50%  { opacity: 1; }
-  100% { transform: translate(22%, 12%)  scale(1.18); opacity: 0.8; }
-}
-
-/* animated border — a soft light travels around the edge over a bevel ring
-   (kept, but gentler/slower so it reads premium, not flashy) */
+.gl-metal-panel::after,
 .gl-metal-panel::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  border-radius: inherit;
-  padding: 1px;
-  pointer-events: none;
-  background: conic-gradient(from var(--gl-bd-angle) at 50% 50%,
-    rgba(255, 255, 255, 0.05) 0deg,
-    rgba(134, 239, 172, 0.24) 40deg,
-    rgba(255, 255, 255, 0.05) 96deg,
-    rgba(0, 0, 0, 0.38) 175deg,
-    rgba(255, 255, 255, 0.05) 250deg,
-    rgba(74, 222, 128, 0.18) 312deg,
-    rgba(255, 255, 255, 0.05) 360deg);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  animation: gl-border-spin 11s linear infinite;
+  display: none;
 }
 @keyframes gl-border-spin { to { --gl-bd-angle: 360deg; } }
 
@@ -3074,70 +3031,16 @@ html:has(.eva-loader) {
   isolation: isolate;
   overflow: hidden;
   border-radius: 16px;
-  background:
-    radial-gradient(120% 80% at 50% -15%, rgba(34, 197, 94, 0.06) 0%, transparent 52%),
-    linear-gradient(162deg, #111111 0%, #0a0f0c 48%, #0d120e 78%, #101612 100%);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.055),
-    inset 0 1px 22px rgba(150, 180, 235, 0.07),
-    inset 0 0 56px rgba(34, 197, 94, 0.05),
-    inset 0 0 46px rgba(0, 0, 0, 0.55),
-    0 2px 4px rgba(0, 0, 0, 0.3),
-    0 18px 40px rgba(0, 0, 0, 0.45);
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 2px 8px rgba(0, 0, 0, 0.35);
 }
 .gl-liquid-panel > * { position: relative; z-index: 2; }
-
-/* rotating liquid-metal reflection — a soft conic sheen turns SLOWLY (42s) and
-   heavily blurred, so it reads as light gliding across brushed steel, very
-   gentle (subtle like Market Statistics, not a visible stripe). */
-.gl-liquid-panel::before {
-  content: '';
-  position: absolute;
-  z-index: 0;
-  inset: -70%;
-  pointer-events: none;
-  background: conic-gradient(from 0deg at 50% 50%,
-    rgba(34, 197, 94, 0) 0deg,
-    rgba(34, 197, 94, 0.11) 55deg,
-    rgba(34, 197, 94, 0) 125deg,
-    rgba(34, 197, 94, 0.05) 210deg,
-    rgba(34, 197, 94, 0) 286deg,
-    rgba(0, 200, 83, 0.10) 360deg);
-  filter: blur(26px);
-  animation: gl-liquid-rotate 42s linear infinite;
-}
-@keyframes gl-liquid-rotate { to { transform: rotate(360deg); } }
-
-/* animated edge border — TWO soft light arcs travel the rim so the corners
-   catch light (variation from Market Statistics' single bright arc), with a
-   gentle breathe so it never reads as a hard rotating line. */
+.gl-liquid-panel::before,
 .gl-liquid-panel::after {
-  content: '';
-  position: absolute;
-  z-index: 1;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  pointer-events: none;
-  background: conic-gradient(from var(--gl-bd-angle) at 50% 50%,
-    rgba(255, 255, 255, 0.04) 0deg,
-    rgba(0, 200, 83, 0.30) 32deg,
-    rgba(255, 255, 255, 0.04) 74deg,
-    rgba(0, 0, 0, 0.30) 150deg,
-    rgba(255, 255, 255, 0.04) 198deg,
-    rgba(0, 200, 83, 0.22) 232deg,
-    rgba(255, 255, 255, 0.04) 286deg,
-    rgba(0, 0, 0, 0.26) 338deg,
-    rgba(255, 255, 255, 0.04) 360deg);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  animation: gl-border-spin 15s linear infinite, gl-liquid-breathe 7s ease-in-out infinite;
-}
-@keyframes gl-liquid-breathe {
-  0%, 100% { opacity: 0.62; }
-  50%      { opacity: 1; }
+  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3296,9 +3199,7 @@ html { -webkit-tap-highlight-color: transparent; }
   border-radius: 14px;
   overflow: hidden;
   z-index: 60;
-  background:
-    radial-gradient(120% 80% at 50% 0%, rgba(74, 100, 170, 0.06) 0%, transparent 60%),
-    linear-gradient(180deg, #14161d 0%, #0a0b10 100%);
+  background: var(--card-bg);
   border: 1px solid rgba(255, 255, 255, 0.07);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 44px rgba(0, 0, 0, 0.7), 0 6px 14px rgba(0, 0, 0, 0.5);
   animation: glSelIn 0.16s cubic-bezier(0.16, 1, 0.3, 1);
@@ -3368,10 +3269,10 @@ html { -webkit-tap-highlight-color: transparent; }
   height: 34px;
   border-radius: 10px;
   flex-shrink: 0;
-  color: #86efac;
-  background: linear-gradient(180deg, rgba(0, 200, 83, 0.16) 0%, rgba(0, 200, 83, 0.04) 100%);
-  border: 1px solid rgba(0, 200, 83, 0.22);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 14px rgba(0, 200, 83, 0.12);
+  color: var(--accent-primary);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 .dash-ico { width: 30px; height: 30px; border-radius: 9px; }
 .dash-chip {
@@ -3414,9 +3315,9 @@ html { -webkit-tap-highlight-color: transparent; }
 .dash-select {
   appearance: none;
   -webkit-appearance: none;
-  background-color: #12141b;
+  background-color: var(--card-bg);
   background-image:
-    linear-gradient(180deg, #1a1e28 0%, #12141b 100%),
+    linear-gradient(180deg, var(--card-bg) 0%, var(--card-bg) 100%),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238B9CB6' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: center, right 10px center;
@@ -3487,115 +3388,38 @@ html { -webkit-tap-highlight-color: transparent; }
   isolation: isolate;
   overflow: hidden;
   border-radius: 12px;
-  background:
-    radial-gradient(130% 80% at 50% -10%, rgba(0, 200, 83, 0.05) 0%, transparent 55%),
-    linear-gradient(168deg, #121319 0%, #0a0b10 52%, #0d0e15 100%);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    inset 0 0 42px rgba(0, 0, 0, 0.45),
-    0 2px 5px rgba(0, 0, 0, 0.3),
-    0 16px 38px rgba(0, 0, 0, 0.45);
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 2px 8px rgba(0, 0, 0, 0.35);
 }
 .gl-onyx-panel > * { position: relative; z-index: 2; }
-
-/* wide soft glow drifting left↔right (horizontal axis = variation, stays soft) */
-.gl-onyx-panel::before {
-  content: '';
-  position: absolute;
-  z-index: 0;
-  inset: -15%;
-  pointer-events: none;
-  background: radial-gradient(40% 72% at 50% 2%,
-    rgba(120, 150, 225, 0.075) 0%,
-    rgba(110, 140, 210, 0.026) 45%,
-    transparent 72%);
-  filter: blur(24px);
-  animation: gl-onyx-drift 16s ease-in-out infinite alternate;
-}
-@keyframes gl-onyx-drift {
-  0%   { transform: translateX(-18%); opacity: 0.6; }
-  100% { transform: translateX(18%);  opacity: 0.95; }
-}
-
-/* animated top-edge glint — an electric-blue highlight slides along the top hairline */
+.gl-onyx-panel::before,
 .gl-onyx-panel::after {
-  content: '';
-  position: absolute;
-  z-index: 3;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  pointer-events: none;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    rgba(0, 200, 83, 0) 18%,
-    rgba(0, 200, 83, 0.7) 50%,
-    rgba(0, 200, 83, 0) 82%,
-    transparent 100%);
-  background-size: 220% 100%;
-  animation: gl-onyx-glint 8s linear infinite;
-}
-@keyframes gl-onyx-glint {
-  0%   { background-position: 130% 0; }
-  100% { background-position: -60% 0; }
+  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .gl-onyx-panel::before, .gl-onyx-panel::after { animation: none; }
 }
 
-/* ── .gl-onyx-panel-b — same dark onyx family as Trending, DIFFERENT pattern:
-   the soft glow drifts diagonally and the glint slides along the BOTTOM edge.
-   For Top Gainers (matches Trending's darkness, distinct motion). ── */
+/* ── .gl-onyx-panel-b — flat grey card variant for data panels. ── */
 .gl-onyx-panel-b {
   position: relative;
   isolation: isolate;
   overflow: hidden;
   border-radius: 12px;
-  background:
-    radial-gradient(130% 80% at 50% 110%, rgba(0, 200, 83, 0.05) 0%, transparent 55%),
-    linear-gradient(168deg, #121319 0%, #0a0b10 52%, #0d0e15 100%);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    inset 0 0 42px rgba(0, 0, 0, 0.45),
-    0 2px 5px rgba(0, 0, 0, 0.3),
-    0 16px 38px rgba(0, 0, 0, 0.45);
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 2px 8px rgba(0, 0, 0, 0.35);
 }
 .gl-onyx-panel-b > * { position: relative; z-index: 2; }
-
-.gl-onyx-panel-b::before {
-  content: '';
-  position: absolute;
-  z-index: 0;
-  inset: -15%;
-  pointer-events: none;
-  background: radial-gradient(42% 70% at 50% 100%,
-    rgba(120, 150, 225, 0.075) 0%,
-    rgba(110, 140, 210, 0.026) 45%,
-    transparent 72%);
-  filter: blur(24px);
-  animation: gl-onyx-drift-b 17s ease-in-out infinite alternate;
-}
-@keyframes gl-onyx-drift-b {
-  0%   { transform: translate(-16%, 4%);  opacity: 0.6; }
-  100% { transform: translate(16%, -6%);  opacity: 0.95; }
-}
+.gl-onyx-panel-b::before,
 .gl-onyx-panel-b::after {
-  content: '';
-  position: absolute;
-  z-index: 3;
-  bottom: 0; left: 0; right: 0;
-  height: 1px;
-  pointer-events: none;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    rgba(0, 200, 83, 0) 18%,
-    rgba(0, 200, 83, 0.7) 50%,
-    rgba(0, 200, 83, 0) 82%,
-    transparent 100%);
-  background-size: 220% 100%;
-  animation: gl-onyx-glint 9s linear infinite;
+  display: none;
 }
 @media (prefers-reduced-motion: reduce) {
   .gl-onyx-panel-b::before, .gl-onyx-panel-b::after { animation: none; }
@@ -3612,125 +3436,36 @@ html { -webkit-tap-highlight-color: transparent; }
   isolation: isolate;
   overflow: hidden;
   border-radius: 16px;
-  background:
-    radial-gradient(120% 90% at 50% 116%, rgba(0, 200, 83, 0.075) 0%, transparent 55%),
-    linear-gradient(160deg, #111219 0%, #0a0b10 52%, #08090e 100%);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.055),
-    inset 0 0 64px rgba(40, 70, 160, 0.08),
-    inset 0 0 46px rgba(0, 0, 0, 0.55),
-    0 2px 5px rgba(0, 0, 0, 0.3),
-    0 20px 46px rgba(0, 0, 0, 0.5);
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 2px 8px rgba(0, 0, 0, 0.35);
 }
 .gl-aurora-panel > * { position: relative; z-index: 2; }
-
-/* deep aurora bloom rising + breathing from the base (the "deep glow") */
-.gl-aurora-panel::before {
-  content: '';
-  position: absolute;
-  z-index: 0;
-  inset: -30% -20% -55% -20%;
-  pointer-events: none;
-  background:
-    radial-gradient(48% 55% at 30% 100%, rgba(0, 200, 83, 0.16) 0%, rgba(0, 200, 83, 0.045) 42%, transparent 70%),
-    radial-gradient(44% 50% at 78% 96%, rgba(34, 197, 94, 0.11) 0%, transparent 66%);
-  filter: blur(34px);
-  animation: gl-aurora-breathe 9s ease-in-out infinite;
-}
-@keyframes gl-aurora-breathe {
-  0%, 100% { opacity: 0.55; transform: translateY(6%) scale(1); }
-  50%      { opacity: 1;    transform: translateY(-4%) scale(1.12); }
-}
-
-/* glowing animated border ring (brighter + a soft outer bloom via drop-shadow) */
+.gl-aurora-panel::before,
 .gl-aurora-panel::after {
-  content: '';
-  position: absolute;
-  z-index: 3;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  pointer-events: none;
-  background: conic-gradient(from var(--gl-bd-angle) at 50% 50%,
-    rgba(255, 255, 255, 0.05) 0deg,
-    rgba(0, 200, 83, 0.55) 30deg,
-    rgba(255, 255, 255, 0.05) 82deg,
-    rgba(0, 0, 0, 0.30) 160deg,
-    rgba(255, 255, 255, 0.05) 232deg,
-    rgba(34, 197, 94, 0.40) 300deg,
-    rgba(255, 255, 255, 0.05) 360deg);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  filter: drop-shadow(0 0 4px rgba(0, 200, 83, 0.40));
-  animation: gl-border-spin 9s linear infinite;
+  display: none;
 }
 
 /* ════════════════════════════════════════════════════════════════════════
-   PRISM PANEL (.gl-prism-panel) — 5th variant: a wide, soft diagonal sheen
-   sweeps slowly across dark metal while BOTH side edges glow/breathe (distinct
-   from onyx's single top glint). For data-heavy panels (Top 20). Pure CSS.
+   PRISM PANEL (.gl-prism-panel) — flat grey card for data-heavy panels.
    ════════════════════════════════════════════════════════════════════════ */
 .gl-prism-panel {
   position: relative;
   isolation: isolate;
   overflow: hidden;
   border-radius: 16px;
-  background:
-    radial-gradient(120% 70% at 50% -10%, rgba(0, 200, 83, 0.035) 0%, transparent 55%),
-    linear-gradient(155deg, #0e0f15 0%, #08090d 55%, #0a0b12 100%);
-  border: 1px solid rgba(255, 255, 255, 0.055);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.045),
-    inset 0 0 60px rgba(0, 0, 0, 0.62),
-    0 2px 5px rgba(0, 0, 0, 0.35),
-    0 20px 44px rgba(0, 0, 0, 0.5);
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 2px 8px rgba(0, 0, 0, 0.35);
 }
 .gl-prism-panel > * { position: relative; z-index: 2; }
-
-/* wide soft diagonal sheen (kept faint so it reads premium, not flashy) */
-.gl-prism-panel::before {
-  content: '';
-  position: absolute;
-  z-index: 0;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: linear-gradient(115deg,
-    transparent 28%,
-    rgba(120, 150, 225, 0.03) 45%,
-    rgba(74, 222, 128, 0.06) 50%,
-    rgba(120, 150, 225, 0.03) 55%,
-    transparent 72%);
-  background-size: 300% 100%;
-  /* `alternate` so the sheen ping-pongs and never hard-resets (the band is fully
-     off-screen at both ends, so the slow reversal is invisible — seamless loop). */
-  animation: gl-prism-sweep 16s ease-in-out infinite alternate;
-}
-@keyframes gl-prism-sweep {
-  0%   { background-position: 150% 0; }
-  100% { background-position: -70% 0; }
-}
-
-/* both side edges glow + breathe (variation from onyx's top-only glint) */
+.gl-prism-panel::before,
 .gl-prism-panel::after {
-  content: '';
-  position: absolute;
-  z-index: 3;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  box-shadow:
-    inset 1px 0 16px -7px rgba(0, 200, 83, 0.55),
-    inset -1px 0 16px -7px rgba(0, 200, 83, 0.55),
-    inset 0 0 0 1px rgba(160, 185, 245, 0.07);
-  animation: gl-prism-breathe 6.5s ease-in-out infinite;
-}
-@keyframes gl-prism-breathe {
-  0%, 100% { opacity: 0.5; }
-  50%      { opacity: 1; }
+  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3774,7 +3509,7 @@ html { -webkit-tap-highlight-color: transparent; }
   outline: none;
   border-color: rgba(0, 200, 83, 0.55);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 0 0 3px rgba(0, 200, 83, 0.16), 0 0 18px rgba(0, 200, 83, 0.12);
-  background: linear-gradient(180deg, rgba(20, 23, 32, 0.96), rgba(12, 14, 20, 0.96));
+  background: linear-gradient(180deg, rgba(24, 24, 24, 0.96), rgba(19, 19, 19, 0.96));
 }
 .gl-input:disabled,
 .gl-textarea:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -3813,7 +3548,8 @@ html { -webkit-tap-highlight-color: transparent; }
   position: relative;
   width: 100%;
   border-radius: 18px;
-  background: linear-gradient(180deg, #111111 0%, #0a0a0a 100%);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
   display: flex;
   flex-direction: column;
