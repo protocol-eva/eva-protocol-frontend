@@ -207,7 +207,6 @@ export function UpgradeDeepThinkPanel({
             className="flex items-center"
             style={{
               color: eligible ? '#10cb81' : '#aebfdc',
-              filter: `drop-shadow(0 0 6px ${eligible ? 'rgba(16,203,129,0.65)' : 'rgba(150,185,255,0.55)'})`,
             }}
           >
             {eligible ? (

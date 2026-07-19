@@ -2630,13 +2630,8 @@ html:has(.eva-loader) {
   filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.4)) drop-shadow(0 0 7px rgba(0, 200, 83, 0.20));
 }
 
-/* metallic-realistic LABEL with strong bloom — for gate/status labels like
-   "Unlocks at 150,000 EVA" / "Locked" / "Active". NOT the typical animated
-   shiny sweep: a static brushed-chrome gradient with a big soft glow so the
-   label reads premium + legible. `--gl-gate-glow` tints the bloom per state
-   (blue when locked, emerald when unlocked). */
+/* metallic-realistic LABEL — gate/status text without bloom glow */
 .gl-gate-label {
-  --gl-gate-glow: rgba(0, 200, 83, 0.5);
   background-image: linear-gradient(
     180deg,
     #ffffff 0%, #e6ecf6 28%, #aab6cf 52%, #f1f4fa 66%, #b6c0d6 100%
@@ -2647,12 +2642,8 @@ html:has(.eva-loader) {
   color: transparent;
   font-weight: 700;
   letter-spacing: 0.01em;
-  filter:
-    drop-shadow(0 1px 0 rgba(0, 0, 0, 0.5))
-    drop-shadow(0 0 10px var(--gl-gate-glow))
-    drop-shadow(0 0 22px var(--gl-gate-glow));
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.5));
 }
-.gl-gate-label--unlocked { --gl-gate-glow: rgba(16, 203, 129, 0.5); }
 
 /* blue-metallic chrome text (a blue twin of .gl-metal-text) — for accent words
    inside a chrome headline. (Static; the animated title variants are below.) */
@@ -3149,7 +3140,7 @@ html:has(.eva-loader) {
 html { -webkit-tap-highlight-color: transparent; }
 
 /* ── Navbar account menu (logged-in user) ─────────────────────────────────────
-   Premium dark-metal pill + dropdown with a subtly animated blue glow border. */
+   Dark grey pill + flat dropdown panel. */
 .gl-user-trigger {
   position: relative;
   display: inline-flex;
@@ -3157,42 +3148,27 @@ html { -webkit-tap-highlight-color: transparent; }
   gap: 9px;
   padding: 5px 11px 5px 5px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  background: linear-gradient(180deg, rgba(18, 18, 18, 0.92) 0%, rgba(10, 10, 10, 0.96) 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 2px 9px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #141414;
+  box-shadow: none;
   cursor: pointer;
   isolation: isolate;
   -webkit-tap-highlight-color: transparent;
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
 }
-.gl-user-trigger:hover { transform: translateY(-1px); border-color: rgba(0, 200, 83, 0.3); }
+.gl-user-trigger:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.14);
+  background: #1a1a1a;
+}
 .gl-user-trigger:active { transform: translateY(0); }
-/* the slightly-animated glow border ring */
 .gl-user-trigger::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  pointer-events: none;
-  background: conic-gradient(from var(--gl-bd-angle) at 50% 50%,
-    rgba(0, 200, 83, 0) 0deg,
-    rgba(0, 200, 83, 0.6) 58deg,
-    rgba(0, 200, 83, 0) 132deg,
-    rgba(0, 200, 83, 0) 220deg,
-    rgba(0, 200, 83, 0.42) 290deg,
-    rgba(0, 200, 83, 0) 360deg);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  opacity: 0.5;
-  animation: gl-border-spin 9s linear infinite, gl-glow-breathe 4.5s ease-in-out infinite;
+  display: none;
 }
 .gl-user-trigger:hover::before,
-.gl-user-trigger[data-open="true"]::before { opacity: 0.9; }
+.gl-user-trigger[data-open="true"]::before { display: none; }
 
-/* Language toggle — same dark-metal pill + animated rim as .gl-user-trigger */
+/* Language toggle — flat dark grey pill (matches .gl-user-trigger) */
 .gl-lang-toggle {
   display: inline-flex;
   align-items: center;
@@ -3265,11 +3241,11 @@ html { -webkit-tap-highlight-color: transparent; }
   flex-shrink: 0;
   font-size: 12px;
   font-weight: 700;
-  color: #eaf1ff;
+  color: #ffffff;
   background: linear-gradient(180deg, #22c55e 0%, #166534 100%);
-  border: 1px solid rgba(74, 222, 128, 0.42);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 0 11px rgba(0, 200, 83, 0.4);
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  box-shadow: none;
+  text-shadow: none;
 }
 .gl-user-email {
   font-size: 13px;
@@ -3291,11 +3267,9 @@ html { -webkit-tap-highlight-color: transparent; }
   border-radius: 14px;
   overflow: hidden;
   z-index: 60;
-  background:
-    radial-gradient(120% 80% at 50% 0%, rgba(74, 100, 170, 0.06) 0%, transparent 60%),
-    linear-gradient(180deg, #14161d 0%, #0a0b10 100%);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 44px rgba(0, 0, 0, 0.7), 0 6px 14px rgba(0, 0, 0, 0.5);
+  background: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.7), 0 6px 14px rgba(0, 0, 0, 0.5);
   animation: glSelIn 0.16s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .gl-user-menu-head {
@@ -3303,7 +3277,8 @@ html { -webkit-tap-highlight-color: transparent; }
   align-items: center;
   gap: 11px;
   padding: 13px 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: #141414;
 }
 .gl-user-menu-head .gl-user-avatar { width: 38px; height: 38px; border-radius: 11px; font-size: 15px; }
 .gl-user-menu-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-tertiary); }
@@ -3324,8 +3299,8 @@ html { -webkit-tap-highlight-color: transparent; }
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 .gl-user-menu-item:hover {
-  background: linear-gradient(180deg, rgba(0, 200, 83, 0.12) 0%, rgba(0, 200, 83, 0.04) 100%);
-  color: #dbe4ff;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
 }
 
 .gl-user-logout {
