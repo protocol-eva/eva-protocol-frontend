@@ -3725,6 +3725,37 @@ html { -webkit-tap-highlight-color: transparent; }
   .gl-prism-panel::before, .gl-prism-panel::after { animation: none; }
 }
 
+/* Dashboard cards — flat grey fill, no inner green glow / sheen overlays */
+.gl-metal-panel::before,
+.gl-metal-panel::after,
+.gl-liquid-panel::before,
+.gl-liquid-panel::after,
+.gl-onyx-panel::before,
+.gl-onyx-panel::after,
+.gl-onyx-panel-b::before,
+.gl-onyx-panel-b::after,
+.gl-aurora-panel::before,
+.gl-aurora-panel::after,
+.gl-prism-panel::before,
+.gl-prism-panel::after {
+  content: none;
+  display: none;
+}
+
+.gl-metal-panel,
+.gl-liquid-panel,
+.gl-onyx-panel,
+.gl-onyx-panel-b,
+.gl-aurora-panel,
+.gl-prism-panel {
+  box-shadow: none;
+}
+
+.gl-metal-panel,
+.gl-liquid-panel {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
 
 /* ════════════════════════════════════════════════════════════════════════
    WIDGET KIT — shared form + modal chrome for the dashboard child widgets
