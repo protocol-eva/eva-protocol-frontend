@@ -37,6 +37,7 @@ import {
   ArrowLeft01Icon,
   ArrowRight01Icon,
   Cancel01Icon,
+  Shield01Icon,
 } from '@hugeicons/core-free-icons'
 import { DashPage, StatCard, SectionHead, EmptyState } from './dash/DashKit'
 import { confirmToast } from '../lib/notify'
@@ -1710,56 +1711,36 @@ function ModelConfigModal({
   const availableModels = allModels || []
   const configuredIds = new Set(configuredModels?.map((m) => m.id) || [])
 
-  const mInputClass =
-    'w-full px-3 py-2.5 rounded-lg text-sm transition-colors focus:outline-none focus:ring-1 focus:ring-[var(--traders-model-accent)]'
-  const mInputStyle: React.CSSProperties = {
-    background: 'var(--surface-primary)',
-    border: '1px solid var(--surface-tertiary)',
-    color: 'var(--text-primary)',
-  }
-
   return (
-    <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
-      onClick={onClose}
-    >
+    <div className="gl-modal-overlay" onClick={onClose}>
       <div
-        className="rounded-xl w-full max-w-lg relative shadow-2xl overflow-hidden"
-        style={{
-          background: 'var(--surface-secondary)',
-          maxHeight: 'calc(100vh - 4rem)',
-        }}
+        className="gl-modal-panel gl-glow-border max-w-lg overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div
-          className="flex items-center justify-between px-5 py-4"
-          style={{ borderBottom: '1px solid var(--surface-tertiary)' }}
-        >
-          <div className="flex items-center gap-2.5">
-            {currentStep > 0 && !editingModelId && (
-              <button
-                type="button"
-                onClick={handleBack}
-                className="p-1 rounded-md transition-colors hover:bg-white/10"
-              >
-                <HugeiconsIcon
-                  icon={ArrowLeft01Icon}
-                  size={16}
-                  strokeWidth={2}
-                  style={{ color: 'var(--text-secondary)' }}
-                />
-              </button>
-            )}
-            <h3
-              className="text-base font-semibold"
-              style={{ color: 'var(--text-primary)' }}
+        <div className="gl-modal-head">
+          {currentStep > 0 && !editingModelId && (
+            <button
+              type="button"
+              onClick={handleBack}
+              className="gl-modal-close"
+              aria-label={language === 'zh' ? '返回' : 'Back'}
             >
-              {editingModelId
-                ? t('editAIModel', language)
-                : t('addAIModel', language)}
-            </h3>
-          </div>
+              <HugeiconsIcon
+                icon={ArrowLeft01Icon}
+                size={18}
+                strokeWidth={1.9}
+              />
+            </button>
+          )}
+          <span className="dash-ico">
+            <HugeiconsIcon icon={Robot01Icon} size={16} strokeWidth={1.9} />
+          </span>
+          <h3 className="gl-modal-title gl-metal-text flex-1 min-w-0">
+            {editingModelId
+              ? t('editAIModel', language)
+              : t('addAIModel', language)}
+          </h3>
           <div className="flex items-center gap-2">
             {!editingModelId && (
               <div className="flex items-center gap-1.5">
@@ -1772,7 +1753,7 @@ function ModelConfigModal({
                       height: 6,
                       background:
                         i <= currentStep
-                          ? 'var(--traders-model-accent)'
+                          ? 'var(--accent-primary)'
                           : 'var(--surface-tertiary)',
                       opacity: i <= currentStep ? 1 : 0.5,
                     }}
@@ -1784,44 +1765,57 @@ function ModelConfigModal({
               <button
                 type="button"
                 onClick={() => onDelete(editingModelId)}
-                className="p-1.5 rounded-md transition-colors hover:bg-red-500/10"
+                className="gl-modal-close"
                 title={language === 'zh' ? '删除' : 'Delete'}
               >
                 <HugeiconsIcon
                   icon={Delete02Icon}
-                  size={16}
+                  size={18}
                   strokeWidth={1.9}
-                  style={{ color: 'var(--binance-red)' }}
                 />
               </button>
             )}
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 rounded-md transition-colors hover:bg-white/10"
+              className="gl-modal-close"
+              aria-label={language === 'zh' ? '关闭' : 'Close'}
             >
-              <HugeiconsIcon
-                icon={Cancel01Icon}
-                size={16}
-                strokeWidth={2}
-                style={{ color: 'var(--text-secondary)' }}
-              />
+              <HugeiconsIcon icon={Cancel01Icon} size={18} strokeWidth={1.9} />
             </button>
           </div>
         </div>
 
-        {/* Content */}
+        {/* Security badge */}
         <div
-          className="px-5 py-5 overflow-y-auto"
-          style={{ maxHeight: 'calc(100vh - 12rem)' }}
+          className="flex items-center justify-center gap-2 px-5 py-2.5"
+          style={{
+            background: 'rgba(14, 203, 129, 0.06)',
+            borderBottom: '1px solid var(--panel-border)',
+          }}
         >
+          <HugeiconsIcon
+            icon={Shield01Icon}
+            size={14}
+            strokeWidth={1.9}
+            style={{ color: 'var(--binance-green)' }}
+          />
+          <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+            {language === 'zh'
+              ? 'API Key 已加密存储，不会以明文保存'
+              : 'API keys are encrypted at rest and never stored in plaintext'}
+          </span>
+        </div>
+
+        {/* Content */}
+        <div className="gl-modal-scroll dash-scroll">
           {/* Step 0: Select Model */}
           {currentStep === 0 && !editingModelId && (
             <div className="space-y-4">
-              <div
-                className="rounded-lg overflow-hidden"
-                style={{ border: '1px solid var(--surface-tertiary)' }}
-              >
+              <div className="gl-field-label mb-2">
+                {language === 'zh' ? '选择 AI 模型' : 'Select AI model'}
+              </div>
+              <div className="gl-onyx-panel rounded-xl overflow-hidden">
                 {availableModels.map((model, i) => {
                   const isConfigured = configuredIds.has(model.id)
                   return (
@@ -1829,28 +1823,20 @@ function ModelConfigModal({
                       key={model.id}
                       type="button"
                       onClick={() => handleSelectModel(model.id)}
-                      className="w-full flex items-center gap-3 px-3.5 py-3 text-left transition-colors hover:bg-white/5"
+                      className="dash-prow w-full flex items-center gap-3 px-3.5 py-3 text-left"
                       style={{
-                        background: 'var(--surface-primary)',
                         borderTop:
-                          i > 0
-                            ? '1px solid var(--surface-tertiary)'
-                            : undefined,
+                          i > 0 ? '1px solid var(--panel-border)' : undefined,
                       }}
                     >
-                      <div
-                        className="w-8 h-8 rounded-lg flex items-center justify-center bg-black shrink-0"
-                        style={{ border: '1px solid var(--surface-tertiary)' }}
-                      >
+                      <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-black shrink-0 border border-[var(--panel-border)]">
                         {getModelIcon(model.provider || model.id, {
                           width: 20,
                           height: 20,
                         }) || (
                           <span
                             className="text-xs font-bold"
-                            style={{
-                              color: 'var(--traders-model-accent-muted)',
-                            }}
+                            style={{ color: 'var(--text-secondary)' }}
                           >
                             {model.name[0]}
                           </span>
@@ -1858,10 +1844,7 @@ function ModelConfigModal({
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span
-                            className="text-sm font-medium"
-                            style={{ color: 'var(--text-primary)' }}
-                          >
+                          <span className="text-sm font-semibold gl-metal-text">
                             {getShortName(model.name)}
                           </span>
                           {model.hasSystemKey && (
@@ -1880,7 +1863,7 @@ function ModelConfigModal({
                               icon={Tick02Icon}
                               size={14}
                               strokeWidth={2}
-                              style={{ color: 'var(--traders-accent)' }}
+                              style={{ color: 'var(--accent-primary)' }}
                             />
                           )}
                         </div>
@@ -1895,9 +1878,9 @@ function ModelConfigModal({
                       <HugeiconsIcon
                         icon={ArrowRight01Icon}
                         size={16}
-                        strokeWidth={2}
+                        strokeWidth={1.9}
                         className="shrink-0"
-                        style={{ color: 'var(--text-secondary)', opacity: 0.5 }}
+                        style={{ color: 'var(--text-tertiary)' }}
                       />
                     </button>
                   )
@@ -1910,35 +1893,23 @@ function ModelConfigModal({
           {(currentStep === 1 || editingModelId) && selectedModel && (
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Selected Model Pill */}
-              <div
-                className="flex items-center justify-between p-3 rounded-lg"
-                style={{
-                  background: 'var(--surface-primary)',
-                  border: '1px solid var(--surface-tertiary)',
-                }}
-              >
+              <div className="gl-metal-panel flex items-center justify-between p-3 rounded-xl overflow-hidden">
                 <div className="flex items-center gap-3">
-                  <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center bg-black shrink-0"
-                    style={{ border: '1px solid var(--surface-tertiary)' }}
-                  >
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-black shrink-0 border border-[var(--panel-border)]">
                     {getModelIcon(selectedModel.provider || selectedModel.id, {
                       width: 20,
                       height: 20,
                     }) || (
                       <span
                         className="text-xs font-bold"
-                        style={{ color: 'var(--traders-model-accent-muted)' }}
+                        style={{ color: 'var(--text-secondary)' }}
                       >
                         {selectedModel.name[0]}
                       </span>
                     )}
                   </div>
                   <div>
-                    <div
-                      className="text-sm font-semibold"
-                      style={{ color: 'var(--text-primary)' }}
-                    >
+                    <div className="text-sm font-semibold gl-metal-text">
                       {getShortName(selectedModel.name)}
                     </div>
                     <div
@@ -1955,11 +1926,7 @@ function ModelConfigModal({
                     href={AI_PROVIDER_CONFIG[selectedModel.provider].apiUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors hover:brightness-110"
-                    style={{
-                      background: 'var(--traders-model-accent)',
-                      color: '#fff',
-                    }}
+                    className="gl-navbar-btn inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold"
                   >
                     <HugeiconsIcon
                       icon={LinkSquare01Icon}
@@ -1988,10 +1955,7 @@ function ModelConfigModal({
 
               {/* API Key */}
               <div className="space-y-1.5">
-                <label
-                  className="text-xs font-medium"
-                  style={{ color: 'var(--text-secondary)' }}
-                >
+                <label className="gl-field-label">
                   API Key {selectedModel?.hasSystemKey ? '' : '*'}
                 </label>
                 <input
@@ -2005,8 +1969,7 @@ function ModelConfigModal({
                         : 'Leave blank to use system API key'
                       : t('enterAPIKey', language)
                   }
-                  className={mInputClass}
-                  style={mInputStyle}
+                  className="gl-input w-full"
                   required={!selectedModel?.hasSystemKey}
                 />
                 {selectedModel?.hasSystemKey && (
@@ -2023,10 +1986,7 @@ function ModelConfigModal({
 
               {/* Custom Base URL */}
               <div className="space-y-1.5">
-                <label
-                  className="text-xs font-medium"
-                  style={{ color: 'var(--text-secondary)' }}
-                >
+                <label className="gl-field-label">
                   {t('customBaseURL', language)}
                 </label>
                 <input
@@ -2034,8 +1994,7 @@ function ModelConfigModal({
                   value={baseUrl}
                   onChange={(e) => setBaseUrl(e.target.value)}
                   placeholder={t('customBaseURLPlaceholder', language)}
-                  className={mInputClass}
-                  style={mInputStyle}
+                  className="gl-input w-full"
                 />
                 <div
                   className="text-xs"
@@ -2047,10 +2006,7 @@ function ModelConfigModal({
 
               {/* Custom Model Name */}
               <div className="space-y-1.5">
-                <label
-                  className="text-xs font-medium"
-                  style={{ color: 'var(--text-secondary)' }}
-                >
+                <label className="gl-field-label">
                   {t('customModelName', language)}
                 </label>
                 <input
@@ -2058,8 +2014,7 @@ function ModelConfigModal({
                   value={modelName}
                   onChange={(e) => setModelName(e.target.value)}
                   placeholder={t('customModelNamePlaceholder', language)}
-                  className={mInputClass}
-                  style={mInputStyle}
+                  className="gl-input w-full"
                 />
                 <div
                   className="text-xs"
@@ -2070,17 +2025,8 @@ function ModelConfigModal({
               </div>
 
               {/* Info Box */}
-              <div
-                className="p-3 rounded-lg text-xs"
-                style={{
-                  background: 'var(--traders-model-accent-bg)',
-                  border: '1px solid var(--traders-model-accent-border)',
-                }}
-              >
-                <div
-                  className="font-medium mb-1.5 flex items-center gap-1.5"
-                  style={{ color: 'var(--traders-model-accent-muted)' }}
-                >
+              <div className="gl-metal-panel rounded-xl p-3 overflow-hidden">
+                <div className="gl-field-label mb-2 flex items-center gap-1.5">
                   <HugeiconsIcon
                     icon={Robot01Icon}
                     size={14}
@@ -2089,7 +2035,7 @@ function ModelConfigModal({
                   {t('information', language)}
                 </div>
                 <div
-                  className="space-y-0.5"
+                  className="space-y-0.5 text-xs"
                   style={{ color: 'var(--text-secondary)' }}
                 >
                   <div>• {t('modelConfigInfo1', language)}</div>
@@ -2100,18 +2046,13 @@ function ModelConfigModal({
 
               {/* Action Buttons */}
               <div
-                className="flex gap-2.5 pt-3"
-                style={{ borderTop: '1px solid var(--surface-tertiary)' }}
+                className="flex gap-2.5 pt-4 mt-1"
+                style={{ borderTop: '1px solid var(--panel-border)' }}
               >
                 <button
                   type="button"
                   onClick={handleBack}
-                  className="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors hover:bg-white/5"
-                  style={{
-                    background: 'var(--surface-primary)',
-                    border: '1px solid var(--surface-tertiary)',
-                    color: 'var(--text-secondary)',
-                  }}
+                  className="gl-modal-btn-ghost flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold"
                 >
                   {editingModelId
                     ? t('cancel', language)
@@ -2125,17 +2066,13 @@ function ModelConfigModal({
                     !selectedModel ||
                     (!apiKey.trim() && !selectedModel?.hasSystemKey)
                   }
-                  className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110"
-                  style={{
-                    background: 'var(--traders-model-accent)',
-                    color: '#fff',
-                  }}
+                  className="gl-modal-btn-primary flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {t('saveConfig', language)}
                   <HugeiconsIcon
                     icon={ArrowRight01Icon}
                     size={15}
-                    strokeWidth={2}
+                    strokeWidth={1.9}
                   />
                 </button>
               </div>
