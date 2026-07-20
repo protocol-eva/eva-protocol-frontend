@@ -10,19 +10,25 @@
 
 [[redirects]]
   from = "/binance/*"
-  to = "https://eva-proxy-production.up.railway.app/binance/:splat"
+  to = "https://api.binance.com/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/coingecko/*"
-  to = "https://eva-proxy-production.up.railway.app/coingecko/:splat"
+  to = "https://api.coingecko.com/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/feargreed/*"
-  to = "https://eva-proxy-production.up.railway.app/feargreed/:splat"
+  to = "https://api.alternative.me/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/fapi/*"
+  to = "https://fapi.binance.com/:splat"
   status = 200
   force = true
 
