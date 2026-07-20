@@ -23,7 +23,7 @@ import { SettingsModal } from './SettingsModal'
 import { LanguageToggle } from './LanguageToggle'
 import type { NavPage } from './nav/navConfig'
 
-const ROBINHOOD_CONTRACT_ADDRESS = '0x00000000000000000000000'
+const ROBINHOOD_CONTRACT_ADDRESS = ''
 const ANNOUNCEMENT_DISMISSED_KEY = 'eva-robinhood-announcement-v2'
 
 type Page =
