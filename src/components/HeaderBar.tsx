@@ -6,7 +6,7 @@ import {
   type MouseEvent as ReactMouseEvent,
 } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
+import { Check, Copy, Menu, X } from 'lucide-react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import {
   ArrowDown01Icon,
@@ -22,6 +22,9 @@ import { DesktopNav, MobileNav } from './nav/NavMenu'
 import { SettingsModal } from './SettingsModal'
 import { LanguageToggle } from './LanguageToggle'
 import type { NavPage } from './nav/navConfig'
+
+const ROBINHOOD_CONTRACT_ADDRESS = '0x00000000000000000000000'
+const ANNOUNCEMENT_DISMISSED_KEY = 'eva-robinhood-announcement-v2'
 
 type Page =
   | 'competition'
@@ -62,6 +65,18 @@ export default function HeaderBar({
 }: HeaderBarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [userDropdownOpen, setUserDropdownOpen] = useState(false)
+  const [announcementVisible, setAnnouncementVisible] = useState(() => {
+    if (typeof window === 'undefined') return true
+    try {
+      return (
+        window.sessionStorage.getItem(ANNOUNCEMENT_DISMISSED_KEY) !==
+        'dismissed'
+      )
+    } catch {
+      return true
+    }
+  })
+  const [contractCopied, setContractCopied] = useState(false)
   const settingsOpen = useAccountUiStore((s) => s.settingsOpen)
   const openSettings = useAccountUiStore((s) => s.openSettings)
   const closeSettings = useAccountUiStore((s) => s.closeSettings)
@@ -113,9 +128,78 @@ export default function HeaderBar({
 
   const isEn = language !== 'zh'
 
+  const copyContractAddress = useCallback(async () => {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(ROBINHOOD_CONTRACT_ADDRESS)
+      } else {
+        const textArea = document.createElement('textarea')
+        textArea.value = ROBINHOOD_CONTRACT_ADDRESS
+        textArea.style.position = 'fixed'
+        textArea.style.opacity = '0'
+        document.body.appendChild(textArea)
+        textArea.select()
+        document.execCommand('copy')
+        textArea.remove()
+      }
+      setContractCopied(true)
+      window.setTimeout(() => setContractCopied(false), 1500)
+    } catch {
+      setContractCopied(false)
+    }
+  }, [])
+
+  const dismissAnnouncement = useCallback(() => {
+    setAnnouncementVisible(false)
+    try {
+      window.sessionStorage.setItem(ANNOUNCEMENT_DISMISSED_KEY, 'dismissed')
+    } catch {
+      // Keep the banner dismissed for this render when storage is unavailable.
+    }
+  }, [])
+
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-50">
+        {announcementVisible && (
+          <div className="eva-announcement-banner">
+            <div className="eva-announcement-content">
+              <span className="eva-announcement-message">
+                EVA is now live on{' '}
+                <strong className="eva-announcement-robinhood">
+                  Robinhood
+                </strong>
+              </span>
+              <span className="eva-announcement-divider" aria-hidden="true" />
+              <button
+                type="button"
+                onClick={copyContractAddress}
+                className="eva-announcement-copy"
+                title="Copy contract address"
+                aria-label="Copy Robinhood contract address"
+              >
+                <span className="eva-announcement-ca">Contract</span>
+                <code>{ROBINHOOD_CONTRACT_ADDRESS}</code>
+                {contractCopied ? (
+                  <Check className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                ) : (
+                  <Copy className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                )}
+                <span className="sr-only" aria-live="polite">
+                  {contractCopied ? 'Contract address copied' : ''}
+                </span>
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={dismissAnnouncement}
+              className="eva-announcement-close"
+              aria-label="Close announcement"
+            >
+              <X className="h-4 w-4" aria-hidden="true" />
+            </button>
+          </div>
+        )}
         <div className="gl-navbar flex items-center justify-between gap-2">
           {/* Brand cluster — EVA wordmark = go home (the back arrow was removed;
             the animated EVA logo now owns "return home"). */}
@@ -368,6 +452,8 @@ export default function HeaderBar({
         </div>
       </nav>
 
+      {announcementVisible && <div className="h-10" aria-hidden="true" />}
+
       {/* Mobile Menu Overlay — rendered outside <nav> so backdrop-filter doesn't trap fixed positioning */}
       <AnimatePresence>
         {mobileMenuOpen && (
@@ -377,14 +463,21 @@ export default function HeaderBar({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-50 md:hidden"
-            style={{ background: 'var(--surface-primary)', top: '64px' }}
+            style={{
+              background: 'var(--surface-primary)',
+              top: announcementVisible ? '104px' : '64px',
+            }}
           >
             <motion.div
               initial={{ y: -10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.05, duration: 0.2 }}
               className="flex flex-col overflow-y-auto px-5 pt-6 pb-8"
-              style={{ height: 'calc(100dvh - 64px)' }}
+              style={{
+                height: announcementVisible
+                  ? 'calc(100dvh - 104px)'
+                  : 'calc(100dvh - 64px)',
+              }}
             >
               {/* Navigation — same NAV config as desktop, grouped, each row with its icon */}
               <div className="flex-1">

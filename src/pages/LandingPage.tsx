@@ -323,7 +323,7 @@ export function LandingPage() {
   const { address: connectedAddress, isConnected, chainId } = useAccount()
   const { switchChainAsync } = useSwitchChain()
 
-  // Landing AI agent is Base-first — nudge connected EVM wallets onto Base.
+  // Landing AI agent is Robinhood-first — nudge connected EVM wallets onto Robinhood Chain.
   useEffect(() => {
     if (
       !isConnected ||
