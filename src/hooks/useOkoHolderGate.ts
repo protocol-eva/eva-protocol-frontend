@@ -1,12 +1,27 @@
 import { useEffect, useMemo, useState } from 'react'
-import { createPublicClient, formatUnits, http } from 'viem'
-import { base } from 'viem/chains'
+import { createPublicClient, defineChain, formatUnits, http } from 'viem'
 import { useAppKitAccount } from '@reown/appkit/react'
 import {
   UPGRADE_MIN_EVA_BALANCE,
   EVA_BASE_TOKEN_ADDRESS,
+  EVA_BASE_CHAIN_ID,
   isEvaTokenConfigured,
 } from '../lib/upgradeConfig'
+
+const robinhoodChain = defineChain({
+  id: EVA_BASE_CHAIN_ID,
+  name: 'Robinhood Chain',
+  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+  rpcUrls: {
+    default: { http: ['https://rpc.mainnet.chain.robinhood.com'] },
+  },
+  blockExplorers: {
+    default: {
+      name: 'Robinhood Explorer',
+      url: 'https://robinhoodchain.blockscout.com',
+    },
+  },
+})
 
 const ERC20_ABI = [
   {
@@ -34,8 +49,8 @@ async function fetchBaseTokenBalance(
   }
 
   const client = createPublicClient({
-    chain: base,
-    transport: http('https://mainnet.base.org'),
+    chain: robinhoodChain,
+    transport: http('https://rpc.mainnet.chain.robinhood.com'),
   })
 
   const [balance, decimals] = await Promise.all([

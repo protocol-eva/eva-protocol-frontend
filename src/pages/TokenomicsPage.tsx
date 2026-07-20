@@ -227,7 +227,7 @@ export function TokenomicsPage() {
     },
     {
       label: tr('stats.launchPlatform'),
-      value: 'Flap',
+      value: 'Virtuals',
       sub: tr('stats.baseEcosystem'),
     },
     { label: tr('stats.launchNetwork'), value: 'Robinhood', sub: tr('stats.layer2') },
@@ -328,24 +328,6 @@ export function TokenomicsPage() {
                 {!isEvaTokenConfigured()
                   ? tr('tba')
                   : `${EVA_BASE_TOKEN_ADDRESS.slice(0, 10)}…${EVA_BASE_TOKEN_ADDRESS.slice(-8)}`}
-              </span>
-              <span
-                className="text-[10px] px-1.5 py-0.5 rounded"
-                style={
-                  !isEvaTokenConfigured()
-                    ? {
-                        background: 'rgba(239,68,68,0.12)',
-                        color: '#f87171',
-                        border: '1px solid rgba(239,68,68,0.2)',
-                      }
-                    : {
-                        background: 'rgba(61,107,255,0.12)',
-                        color: '#00c853',
-                        border: '1px solid rgba(61,107,255,0.24)',
-                      }
-                }
-              >
-                {!isEvaTokenConfigured() ? tr('tba') : tr('live')}
               </span>
               <button
                 onClick={handleCopy}

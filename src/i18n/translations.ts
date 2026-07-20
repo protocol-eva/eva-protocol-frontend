@@ -1301,7 +1301,7 @@ export const translations = {
         totalSupply: 'Total Supply',
         tokens: 'tokens',
         launchPlatform: 'Launch Platform',
-        baseEcosystem: 'Robinhood ecosystem',
+        baseEcosystem: 'Virtuals Protocol',
         launchNetwork: 'Launch Network',
         layer2: 'Robinhood chain',
         tge: 'TGE',
@@ -1311,7 +1311,7 @@ export const translations = {
       allocations: {
         publicSale: {
           label: 'Public Sale',
-          desc: 'Robinhood launch — fair and transparent distribution',
+          desc: 'Virtuals launch on Robinhood — fair and transparent distribution',
         },
         treasury: {
           label: 'Treasury',
@@ -2771,7 +2771,7 @@ export const translations = {
         totalSupply: '总供应量',
         tokens: '枚代币',
         launchPlatform: '发射平台',
-        baseEcosystem: 'Robinhood 生态',
+        baseEcosystem: 'Virtuals Protocol',
         launchNetwork: '发射网络',
         layer2: 'Robinhood 链',
         tge: 'TGE',
@@ -2781,7 +2781,7 @@ export const translations = {
       allocations: {
         publicSale: {
           label: '公开发售',
-          desc: 'Robinhood 发射 — 公平透明的分配',
+          desc: 'Virtuals 于 Robinhood 发射 — 公平透明的分配',
         },
         treasury: {
           label: '金库',

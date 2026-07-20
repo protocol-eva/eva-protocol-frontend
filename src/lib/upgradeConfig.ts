@@ -1,15 +1,17 @@
 export const UPGRADE_MIN_EVA_BALANCE = 150_000
 
-/** Base mainnet — EVA launch chain. */
-export const EVA_BASE_CHAIN_ID = 8453 as const
+/** Robinhood Chain — EVA launch network. */
+export const EVA_BASE_CHAIN_ID = 4663 as const
 
-/**
- * Fill this in once the EVA ERC-20 is live on Base mainnet.
- * Leave as `TBA` until the contract is deployed.
- */
-export const EVA_BASE_TOKEN_ADDRESS: string = 'TBA'
+/** EVA ERC-20 on Robinhood Chain. */
+export const EVA_BASE_TOKEN_ADDRESS: string =
+  '0x6e94eda608eec1f30cd9add9d4f5f28d25903334'
+
+export const EVA_TOKEN_EXPLORER_URL =
+  `https://robinhoodchain.blockscout.com/token/${EVA_BASE_TOKEN_ADDRESS}` as const
 
 export const UPGRADE_SUPPORTED_CHAINS = [
+  { id: '4663', label: 'Robinhood' },
   { id: '8453', label: 'Base' },
   { id: '1', label: 'Ethereum' },
   { id: '56', label: 'BNB Chain' },

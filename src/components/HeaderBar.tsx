@@ -22,8 +22,9 @@ import { DesktopNav, MobileNav } from './nav/NavMenu'
 import { SettingsModal } from './SettingsModal'
 import { LanguageToggle } from './LanguageToggle'
 import type { NavPage } from './nav/navConfig'
+import { EVA_BASE_TOKEN_ADDRESS } from '../lib/upgradeConfig'
 
-const ROBINHOOD_CONTRACT_ADDRESS = '0x6e94eda608eec1f30cd9add9d4f5f28d25903334'
+const ROBINHOOD_CONTRACT_ADDRESS = EVA_BASE_TOKEN_ADDRESS
 const ANNOUNCEMENT_DISMISSED_KEY = 'eva-robinhood-announcement-v2'
 
 type Page =
